@@ -1,7 +1,7 @@
 import { Checkbox } from '@/shadcn/components/checkbox'
 import type * as types from './type'
 
-const CheckboxSingleList = (props: types.ConfigProp) => {
+export const CheckboxSingleList = (props: types.ConfigProp) => {
   return (
     <div className="flex gap-4">
       {props.options.map(opt => (
@@ -22,5 +22,3 @@ const CheckboxSingleList = (props: types.ConfigProp) => {
     </div>
   )
 }
-
-export default CheckboxSingleList

@@ -1,3 +1,5 @@
+import { enumToOptions } from '@/util'
+
 // 表单编辑模式
 export const EnumFormMode = {
   VIEW: 'VIEW',
@@ -14,3 +16,8 @@ export const EnumFormModeLabel: Record<EnumFormMode, string> = {
   UPDATE: '更新',
   DELETE: '删除',
 }
+
+export const enumFormModeOptions = enumToOptions(
+  EnumFormMode,
+  EnumFormModeLabel
+)

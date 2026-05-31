@@ -1,3 +1,5 @@
+import { enumToOptions } from '@/util'
+
 // 性别
 export const EnumGenderType = {
   MALE: 'MALE',
@@ -13,3 +15,8 @@ export const EnumGenderTypeLabel: Record<EnumGenderType, string> = {
   FEMALE: '女士',
   UNKNOWN: '保密',
 }
+
+export const enumGenderTypeOptions = enumToOptions(
+  EnumGenderType,
+  EnumGenderTypeLabel
+)

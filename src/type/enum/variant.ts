@@ -1,3 +1,5 @@
+import { enumToOptions } from '@/util'
+
 // 展示风格（控制颜色如何展示）
 export const EnumVariant = {
   SOLID: 'SOLID', // 实心：背景色 + 白字
@@ -12,3 +14,5 @@ export const EnumVariantLabel: Record<EnumVariant, string> = {
   OUTLINE: '描边',
   SOFT: '柔和',
 }
+
+export const enumVariantOptions = enumToOptions(EnumVariant, EnumVariantLabel)

@@ -1,3 +1,5 @@
+import { enumToOptions } from '@/util'
+
 // 存储方式
 export const EnumStorageMethod = {
   COLD: 'COLD',
@@ -13,3 +15,8 @@ export const EnumStorageMethodLabel: Record<EnumStorageMethod, string> = {
   FROZEN: '冷冻',
   NORMAL: '常温',
 }
+
+export const enumStorageMethodOptions = enumToOptions(
+  EnumStorageMethod,
+  EnumStorageMethodLabel
+)

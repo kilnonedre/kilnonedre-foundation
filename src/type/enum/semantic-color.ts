@@ -1,3 +1,5 @@
+import { enumToOptions } from '@/util'
+
 // 语义颜色（表示颜色含义，而不是展示方式）
 export const EnumSemanticColor = {
   PRIMARY: 'PRIMARY',
@@ -21,3 +23,8 @@ export const EnumSemanticColorLabel: Record<EnumSemanticColor, string> = {
   NEUTRAL: '中性（灰）',
   DARK: '深色（黑）',
 }
+
+export const enumSemanticColorOptions = enumToOptions(
+  EnumSemanticColor,
+  EnumSemanticColorLabel
+)

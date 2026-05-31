@@ -1,3 +1,5 @@
+import { enumToOptions } from '@/util'
+
 // 地图来源
 export const EnumMapProvider = {
   AMAP: 'AMAP',
@@ -11,3 +13,8 @@ export const EnumMapProviderLabel: Record<EnumMapProvider, string> = {
   AMAP: '高德地图',
   TENCENT: '腾讯地图',
 }
+
+export const enumMapProviderOptions = enumToOptions(
+  EnumMapProvider,
+  EnumMapProviderLabel
+)

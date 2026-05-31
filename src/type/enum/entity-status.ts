@@ -1,3 +1,5 @@
+import { enumToOptions } from '@/util'
+
 // 实体状态
 export const EnumEntityStatus = {
   ACTIVE: 'ACTIVE',
@@ -13,3 +15,8 @@ export const EnumEntityStatusLabel: Record<EnumEntityStatus, string> = {
   INACTIVE: '停用',
   DELETED: '已删除',
 }
+
+export const enumEntityStatusOptions = enumToOptions(
+  EnumEntityStatus,
+  EnumEntityStatusLabel
+)

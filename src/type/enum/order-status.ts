@@ -1,3 +1,5 @@
+import { enumToOptions } from '@/util'
+
 // 订单状态
 export const EnumOrderStatus = {
   CREATED: 'CREATED', // 已创建（未支付）
@@ -21,3 +23,8 @@ export const EnumOrderStatusLabel: Record<EnumOrderStatus, string> = {
   REFUNDING: '退款中',
   REFUNDED: '已退款',
 }
+
+export const enumOrderStatusOptions = enumToOptions(
+  EnumOrderStatus,
+  EnumOrderStatusLabel
+)
