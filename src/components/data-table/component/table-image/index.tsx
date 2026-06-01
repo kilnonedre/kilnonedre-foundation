@@ -1,7 +1,6 @@
 import { useState } from 'react'
 import { Eye } from 'lucide-react'
 import { Button } from '@/shadcn/components/button'
-import { Card } from '@/shadcn/components/card'
 import {
   Dialog,
   DialogContent,
@@ -18,8 +17,11 @@ export const TableImage = (props: types.ConfigProp) => {
     <div className="space-y-3">
       <div className="flex gap-3 overflow-x-auto">
         {props.value.map((img, index) => (
-          <Card key={img.id + index} className="group overflow-hidden w-25">
-            <div className="relative aspect-square bg-muted">
+          <div
+            key={img.id + index}
+            className="rounded-xl border bg-card text-card-foreground shadow group overflow-hidden w-25 aspect-square"
+          >
+            <div className="relative bg-muted">
               <img
                 src={img.url}
                 alt=""
@@ -40,7 +42,7 @@ export const TableImage = (props: types.ConfigProp) => {
                 </Button>
               </div>
             </div>
-          </Card>
+          </div>
         ))}
       </div>
 
