@@ -1,9 +1,9 @@
-import { ColumnDef } from '@tanstack/react-table'
+import type { ColumnDef } from '@tanstack/react-table'
 import { TableHeaderText, TableText } from '@/components'
 import type * as types from './type'
 
 export const buildColumn =
-  <T extends Record<string, unknown>>() =>
+  <T extends object>() =>
   <K extends keyof T>(props: types.ConfigProp<T, K>): ColumnDef<T> => {
     const { key, label, render } = props
 
