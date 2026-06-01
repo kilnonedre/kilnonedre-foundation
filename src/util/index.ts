@@ -1,3 +1,4 @@
+export * from '../render'
 export * from './bool-to-text'
 export * from './cn'
 export * from './date'

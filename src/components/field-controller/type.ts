@@ -3,20 +3,24 @@ import {
   Control,
   ControllerFieldState,
   ControllerRenderProps,
+  FieldPath,
   FieldValues,
 } from 'react-hook-form'
 import { EnumFormMode } from '@/type'
 
-export interface ConfigProp {
+export interface ConfigProp<
+  T extends FieldValues,
+  TName extends FieldPath<T> = FieldPath<T>,
+> {
   id: string
-  name: string
+  name: TName
+  label: string
   required?: boolean
   tip?: string
-  control: Control<FieldValues>
+  control: Control<T>
   mode?: EnumFormMode
-  label?: string
   children: (_params: {
-    field: ControllerRenderProps<FieldValues, string>
+    field: ControllerRenderProps<T, FieldPath<T>>
     fieldState: ControllerFieldState
     id: string
   }) => ReactNode
