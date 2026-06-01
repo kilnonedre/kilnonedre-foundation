@@ -28,15 +28,13 @@ export const enumValues = <T extends Record<string, string>>(obj: T) =>
   Object.values(obj) as [T[keyof T], ...T[keyof T][]]
 
 export const zTextOptional = (label: string, min = 1, max = 32) =>
-  z.preprocess(
-    emptyToUndefined,
-    z
-      .string()
-      .trim()
-      .min(min, `${label}至少 ${min} 个字符`)
-      .max(max, `${label}最多 ${max} 个字符`)
-      .optional()
-  )
+  z
+    .string()
+    .trim()
+    .max(max, `${label}最多 ${max} 个字符`)
+    .refine(v => v === '' || v.length >= min, {
+      message: `${label}至少 ${min} 个字符`,
+    })
 
 export const zTextRequired = (label: string, min = 1, max = 32) =>
   z
@@ -56,14 +54,11 @@ export const zIdCard = (label = '身份证号') =>
     .regex(/^\d{15}$|^\d{17}(\d|X|x)$/, `${label}格式不正确`)
 
 export const zIdCardOptional = (label = '身份证号') =>
-  z.preprocess(
-    emptyToUndefined,
-    z
-      .string()
-      .trim()
-      .regex(/^\d{15}$|^\d{17}(\d|X|x)$/, `${label}格式不正确`)
-      .optional()
-  )
+  z
+    .string()
+    .trim()
+    .regex(/^\d{15}$|^\d{17}(\d|X|x)$/, `${label}格式不正确`)
+    .optional()
 
 export const zEmail = (max = 32) =>
   z
@@ -224,7 +219,7 @@ export const zCoerceNumberOptional = (
   label: string,
   min?: number,
   max?: number
-) => z.preprocess(emptyToUndefined, zCoerceNumber(label, min, max).optional())
+) => zCoerceNumber(label, min, max).optional()
 
 export const zDecimal = (label: string, min?: number, max?: number) => {
   let schema = z
@@ -250,4 +245,4 @@ export const zDecimal = (label: string, min?: number, max?: number) => {
 }
 
 export const zDecimalOptional = (label: string, min?: number, max?: number) =>
-  z.preprocess(emptyToUndefined, zDecimal(label, min, max).optional())
+  zDecimal(label, min, max).optional()
