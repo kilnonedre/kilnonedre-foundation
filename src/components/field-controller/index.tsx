@@ -1,3 +1,5 @@
+'use client'
+
 import { Controller, FieldPath, FieldValues } from 'react-hook-form'
 import { CircleQuestionMark } from 'lucide-react'
 import { Field, FieldError, FieldLabel } from '@/shadcn/components/field'
