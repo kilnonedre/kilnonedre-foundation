@@ -11,7 +11,7 @@ import {
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table'
-import TableEmpty from '@/components/data-table/component/table-empty'
+import { TableEmpty } from '@/components/data-table/component/table-empty'
 import {
   Table,
   TableBody,

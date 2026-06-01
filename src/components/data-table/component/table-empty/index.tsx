@@ -6,7 +6,7 @@ import {
   EmptyMedia,
 } from '@/shadcn/components/empty'
 
-const TableEmpty = () => {
+export const TableEmpty = () => {
   return (
     <Empty>
       <EmptyHeader>
@@ -18,5 +18,3 @@ const TableEmpty = () => {
     </Empty>
   )
 }
-
-export default TableEmpty

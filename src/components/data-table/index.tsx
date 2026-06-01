@@ -20,7 +20,7 @@ import {
   FilterIcon,
   RotateCcwIcon,
 } from 'lucide-react'
-import TableEmpty from '@/components/data-table/component/table-empty'
+import { TableEmpty } from '@/components/data-table/component'
 import { TablePagination } from '@/components/data-table/component/table-pagination'
 import { Button } from '@/shadcn/components/button'
 import {

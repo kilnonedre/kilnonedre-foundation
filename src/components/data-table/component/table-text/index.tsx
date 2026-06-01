@@ -1,7 +1,7 @@
 import { cn } from '@/util'
 import type * as types from './type'
 
-const TableText = (props: types.ConfigProp) => {
+export const TableText = (props: types.ConfigProp) => {
   return (
     <div
       className={cn(
@@ -15,5 +15,3 @@ const TableText = (props: types.ConfigProp) => {
     </div>
   )
 }
-
-export default TableText
