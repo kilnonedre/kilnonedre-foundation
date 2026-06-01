@@ -14,6 +14,8 @@ import { Textarea } from '@/shadcn/components/textarea'
 import { EnumFormMode } from '@/type'
 import type * as types from './type'
 
+export * from './type'
+
 export const getSuccessMessage = (mode: EnumFormMode) => {
   switch (mode) {
     case EnumFormMode.CREATE:
