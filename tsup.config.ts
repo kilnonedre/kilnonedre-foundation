@@ -7,4 +7,7 @@ export default defineConfig({
   splitting: false,
   clean: true,
   bundle: true,
+  banner: {
+    js: '"use client";',
+  },
 })
