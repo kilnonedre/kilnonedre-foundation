@@ -159,7 +159,12 @@ export const zDate = (label: string) =>
     message: `请选择${label}`,
   })
 
-export const zDateOptional = () => z.date().optional()
+export const zDateOptional = (label: string) =>
+  z
+    .date({
+      message: `请选择${label}`,
+    })
+    .optional()
 
 export const zNumber = (label: string, min?: number, max?: number) => {
   let schema = z.number({
