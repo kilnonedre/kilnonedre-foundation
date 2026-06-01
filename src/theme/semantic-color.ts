@@ -9,48 +9,118 @@ export type SemanticColorToken = {
   focusRing: string
 }
 
+type ColorClassToken = {
+  bg3: string
+  bg4: string
+  bg9: string
+  bg10: string
+  text11: string
+  border7: string
+  ring8: string
+}
+
 const createColor = (
-  color: string,
+  color: ColorClassToken,
   solidText = 'text-white'
 ): Record<EnumVariant, SemanticColorToken> => ({
   [EnumVariant.SOFT]: {
-    bg: `bg-[var(--${color}-3)]`,
-    text: `text-[var(--${color}-11)]`,
-    border: `border-[var(--${color}-7)]`,
-    hoverBg: `hover:bg-[var(--${color}-4)]`,
+    bg: color.bg3,
+    text: color.text11,
+    border: color.border7,
+    hoverBg: color.bg4,
     hoverText: '',
-    focusRing: `focus-visible:ring-[var(--${color}-8)]`,
+    focusRing: color.ring8,
   },
 
   [EnumVariant.SOLID]: {
-    bg: `bg-[var(--${color}-9)]`,
+    bg: color.bg9,
     text: solidText,
-    border: `border-[var(--${color}-9)]`,
-    hoverBg: `hover:bg-[var(--${color}-10)]`,
+    border: color.bg9,
+    hoverBg: color.bg10,
     hoverText: '',
-    focusRing: `focus-visible:ring-[var(--${color}-8)]`,
+    focusRing: color.ring8,
   },
 
   [EnumVariant.OUTLINE]: {
     bg: 'bg-transparent',
-    text: `text-[var(--${color}-11)]`,
-    border: `border-[var(--${color}-7)]`,
-    hoverBg: `hover:bg-[var(--${color}-3)]`,
+    text: color.text11,
+    border: color.border7,
+    hoverBg: color.bg3,
     hoverText: '',
-    focusRing: `focus-visible:ring-[var(--${color}-8)]`,
+    focusRing: color.ring8,
   },
 })
+
+const blue: ColorClassToken = {
+  bg3: 'bg-[var(--blue-3)]',
+  bg4: 'hover:bg-[var(--blue-4)]',
+  bg9: 'bg-[var(--blue-9)]',
+  bg10: 'hover:bg-[var(--blue-10)]',
+  text11: 'text-[var(--blue-11)]',
+  border7: 'border-[var(--blue-7)]',
+  ring8: 'focus-visible:ring-[var(--blue-8)]',
+}
+
+const green: ColorClassToken = {
+  bg3: 'bg-[var(--green-3)]',
+  bg4: 'hover:bg-[var(--green-4)]',
+  bg9: 'bg-[var(--green-9)]',
+  bg10: 'hover:bg-[var(--green-10)]',
+  text11: 'text-[var(--green-11)]',
+  border7: 'border-[var(--green-7)]',
+  ring8: 'focus-visible:ring-[var(--green-8)]',
+}
+
+const amber: ColorClassToken = {
+  bg3: 'bg-[var(--amber-3)]',
+  bg4: 'hover:bg-[var(--amber-4)]',
+  bg9: 'bg-[var(--amber-9)]',
+  bg10: 'hover:bg-[var(--amber-10)]',
+  text11: 'text-[var(--amber-11)]',
+  border7: 'border-[var(--amber-7)]',
+  ring8: 'focus-visible:ring-[var(--amber-8)]',
+}
+
+const red: ColorClassToken = {
+  bg3: 'bg-[var(--red-3)]',
+  bg4: 'hover:bg-[var(--red-4)]',
+  bg9: 'bg-[var(--red-9)]',
+  bg10: 'hover:bg-[var(--red-10)]',
+  text11: 'text-[var(--red-11)]',
+  border7: 'border-[var(--red-7)]',
+  ring8: 'focus-visible:ring-[var(--red-8)]',
+}
+
+const cyan: ColorClassToken = {
+  bg3: 'bg-[var(--cyan-3)]',
+  bg4: 'hover:bg-[var(--cyan-4)]',
+  bg9: 'bg-[var(--cyan-9)]',
+  bg10: 'hover:bg-[var(--cyan-10)]',
+  text11: 'text-[var(--cyan-11)]',
+  border7: 'border-[var(--cyan-7)]',
+  ring8: 'focus-visible:ring-[var(--cyan-8)]',
+}
+
+const slate: ColorClassToken = {
+  bg3: 'bg-[var(--slate-3)]',
+  bg4: 'hover:bg-[var(--slate-4)]',
+  bg9: 'bg-[var(--slate-9)]',
+  bg10: 'hover:bg-[var(--slate-10)]',
+  text11: 'text-[var(--slate-11)]',
+  border7: 'border-[var(--slate-7)]',
+  ring8: 'focus-visible:ring-[var(--slate-8)]',
+}
 
 const semanticColorMap: Record<
   EnumSemanticColor,
   Record<EnumVariant, SemanticColorToken>
 > = {
-  [EnumSemanticColor.PRIMARY]: createColor('blue'),
-  [EnumSemanticColor.SUCCESS]: createColor('green'),
-  [EnumSemanticColor.WARNING]: createColor('amber', 'text-black'),
-  [EnumSemanticColor.DANGER]: createColor('red'),
-  [EnumSemanticColor.INFO]: createColor('cyan', 'text-black'),
-  [EnumSemanticColor.NEUTRAL]: createColor('slate'),
+  [EnumSemanticColor.PRIMARY]: createColor(blue),
+  [EnumSemanticColor.SUCCESS]: createColor(green),
+  [EnumSemanticColor.WARNING]: createColor(amber, 'text-black'),
+  [EnumSemanticColor.DANGER]: createColor(red),
+  [EnumSemanticColor.INFO]: createColor(cyan, 'text-black'),
+  [EnumSemanticColor.NEUTRAL]: createColor(slate),
   [EnumSemanticColor.DARK]: {
     [EnumVariant.SOFT]: {
       bg: 'bg-[var(--slate-4)]',
