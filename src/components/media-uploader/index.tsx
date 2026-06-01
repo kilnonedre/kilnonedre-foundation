@@ -9,6 +9,7 @@ import {
   DialogTitle,
 } from '@/shadcn/components/dialog'
 import { ScrollArea } from '@/shadcn/components/scroll-area'
+import { UUID } from '@/type'
 import { cn, genUuid } from '@/util'
 import type * as types from './type'
 
@@ -25,7 +26,7 @@ export const MediaUploader = ({ value = [], ...props }: types.ConfigProps) => {
   useEffect(() => {
     let cancelled = false
 
-    async function hydrateFromValue(ids: Array<string>) {
+    async function hydrateFromValue(ids: Array<UUID>) {
       const existed = new Map<string, types.MediaItem>()
 
       items.forEach(it => {

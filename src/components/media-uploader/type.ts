@@ -1,4 +1,4 @@
-import { CommonObject } from '@/type'
+import { CommonObject, UUID } from '@/type'
 import { ConfigApiRespT } from '@/type/api'
 
 export interface MediaItem {
@@ -10,7 +10,7 @@ export interface MediaItem {
 }
 
 export interface ConfigProps {
-  value?: Array<string>
+  value?: Array<UUID>
   onChange?: (_ids: string[]) => void
   className?: string
   disabled?: boolean
@@ -18,6 +18,6 @@ export interface ConfigProps {
   readonly?: boolean
   maxSizeKb?: number
   upload: (_formData: FormData) => Promise<ConfigApiRespT<CommonObject>>
-  read: (_id: string) => Promise<ConfigApiRespT<CommonObject>>
+  read: (_id: UUID) => Promise<ConfigApiRespT<CommonObject>>
   onError?: (_message: string) => void
 }
