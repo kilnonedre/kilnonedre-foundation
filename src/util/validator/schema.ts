@@ -21,7 +21,6 @@ export const emptyToUndefined = (value: unknown): string | undefined => {
   }
 
   const v = value.trim()
-
   return v || undefined
 }
 
