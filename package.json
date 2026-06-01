@@ -14,7 +14,8 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    }
+    },
+    "./color.css": "./dist/style/color.css"
   },
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --clean",
