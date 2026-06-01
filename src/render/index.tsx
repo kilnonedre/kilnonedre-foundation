@@ -1,5 +1,5 @@
 import { ReactNode } from 'react'
-import { FieldValues, UseFormReturn } from 'react-hook-form'
+import { FieldValues, Path, UseFormReturn } from 'react-hook-form'
 import { EyeIcon, EyeOffIcon } from 'lucide-react'
 import { FieldController, FieldGroup } from '@/components'
 import { Button } from '@/shadcn/components/button'
@@ -78,10 +78,10 @@ export const renderConfirmFooter = () => {
   )
 }
 
-export const renderBody = (
+export const renderBody = <T extends FieldValues>(
   mode: EnumFormMode,
   formFields: () => ReactNode,
-  form: UseFormReturn<FieldValues>
+  form: UseFormReturn<T>
 ) => {
   switch (mode) {
     case EnumFormMode.DELETE:
@@ -91,7 +91,7 @@ export const renderBody = (
             mode,
             form,
             id: 'updatedReason',
-            name: 'updatedReason',
+            name: 'updatedReason' as Path<T>,
             label: '删除原因',
           })}
         </FieldGroup>
