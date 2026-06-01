@@ -14,7 +14,9 @@ import {
 } from '@/shadcn/components/dropdown-menu'
 import { getOptionMap, renderCascaderNodes } from './dropdown-cascader-base'
 
-export const DropdownCascader = (props: ConfigDropdownCascaderSingleProp) => {
+export const DropdownCascaderSingle = (
+  props: ConfigDropdownCascaderSingleProp
+) => {
   const optionMap = React.useMemo(
     () => getOptionMap(props.options),
     [props.options]
