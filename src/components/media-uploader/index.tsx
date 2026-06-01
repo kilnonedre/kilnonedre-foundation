@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Eye, Loader2, Plus, Trash2 } from 'lucide-react'
 import { Button } from '@/shadcn/components/button'
-import { Card } from '@/shadcn/components/card'
 import {
   Dialog,
   DialogContent,
@@ -202,7 +201,10 @@ export const MediaUploader = ({ value = [], ...props }: types.ConfigProps) => {
       <ScrollArea className="rounded-lg border">
         <div className="grid grid-cols-2 gap-3 p-3 sm:grid-cols-3 lg:grid-cols-4">
           {items.map((it, index) => (
-            <Card key={it.id + index} className="group overflow-hidden">
+            <div
+              key={it.id + index}
+              className="rounded-xl border bg-card text-card-foreground shadow group overflow-hidden"
+            >
               <div className="relative aspect-square bg-muted">
                 {it.url || it.localUrl ? (
                   <img
@@ -246,18 +248,18 @@ export const MediaUploader = ({ value = [], ...props }: types.ConfigProps) => {
                   </div>
                 )}
               </div>
-            </Card>
+            </div>
           ))}
 
           {showUploadButton && (
-            <Card
-              className="flex aspect-square cursor-pointer items-center justify-center hover:bg-muted/50"
+            <div
+              className="rounded-xl border bg-card text-card-foreground shadow flex aspect-square cursor-pointer items-center justify-center hover:bg-muted/50"
               onClick={() => {
                 inputRef.current?.click()
               }}
             >
               <Plus className="h-6 w-6 text-muted-foreground" />
-            </Card>
+            </div>
           )}
         </div>
       </ScrollArea>
