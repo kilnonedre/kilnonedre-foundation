@@ -17,7 +17,7 @@ export const FieldText = ({
         {name}
       </FieldLabel>
 
-      <div id={id} className="text-sm leading-6">
+      <div id={id} className="text-base leading-6">
         {render ?? (isEmpty ? placeholder : value)}
       </div>
     </Field>

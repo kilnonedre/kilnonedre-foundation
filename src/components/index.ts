@@ -1,6 +1,7 @@
 export * from '../theme'
 export * from './badge'
 export * from './button'
+export * from './card'
 export * from './checkbox-list'
 export * from './data-table'
 export * from './dialog'

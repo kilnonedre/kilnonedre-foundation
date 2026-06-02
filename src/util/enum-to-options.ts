@@ -1,9 +1,9 @@
-import { CommonOption } from '../type'
+import { CommonOptionT } from '../type'
 
 export const enumToOptions = <T extends string>(
   enumObj: Record<string, T>,
   labelMap: Record<T, string>
-): Array<CommonOption> => {
+): Array<CommonOptionT<T>> => {
   return Object.values(enumObj).map(value => ({
     value,
     label: labelMap[value],
