@@ -1,3 +1,4 @@
+export * from './amap-plugin-position'
 export * from './approval-status'
 export * from './approval-view'
 export * from './entity-status'

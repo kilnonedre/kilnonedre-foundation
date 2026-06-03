@@ -4,16 +4,24 @@ import AMapLoader from '@amap/amap-jsapi-loader'
 import { Button, Title } from '@/components'
 import LocationCard from '@/map/amap/component/location-card'
 import Search from '@/map/amap/component/search'
+import { WaypointList } from '@/map/amap/component/waypoint-list'
+import { AMapContext, AMapContextValue } from '@/map/amap/context'
 import { drivingPolicyList } from '@/map/amap/data'
-import { createMarkerIcon } from '@/map/amap/util'
+import { Marker } from '@/map/amap/overlay'
+import { DestinationMaker } from '@/map/amap/overlay/maker/preset/destination-maker'
+import { DriverMaker } from '@/map/amap/overlay/maker/preset/driver-maker'
+import { PickedMaker } from '@/map/amap/overlay/maker/preset/picked-maker'
+import { WaypointMaker } from '@/map/amap/overlay/maker/preset/waypoint-maker'
+import { ControlBar, Scale } from '@/map/amap/plugin'
+import { Geolocation } from '@/map/amap/plugin/geolocation'
+import { HawkEye } from '@/map/amap/plugin/hawk-eye'
+import { ToolBar } from '@/map/amap/plugin/tool-bar'
 import { Separator } from '@/shadcn/components/separator'
 import {
   CommonLocation,
   ConfigAMapWithDriving,
   ConfigAutoCompleteTip,
   ConfigDrivingInstance,
-  ConfigPoiItem,
-  EnumMarkerType,
   EnumSemanticColor,
   EnumVariant,
   LngLat,
@@ -21,14 +29,13 @@ import {
 import { normalizeKeyword } from '@/util'
 import type * as types from './type'
 
-export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
+export * from './overlay'
+export * from './plugin'
+
+const AMapBase = ({ version = '2.0', ...props }: types.ConfigProp) => {
   const mapRef = useRef<AMap.Map | null>(null)
   const AMapRef = useRef<ConfigAMapWithDriving | null>(null)
 
-  const pickMarkerRef = useRef<AMap.Marker | null>(null)
-  const destinationMarkerRef = useRef<AMap.Marker | null>(null)
-  const driverMarkerRef = useRef<AMap.Marker | null>(null)
-  const waypointMarkerListRef = useRef<AMap.Marker[]>([])
   const infoWindowRef = useRef<AMap.InfoWindow | null>(null)
 
   const geocoderRef = useRef<AMap.Geocoder | null>(null)
@@ -39,21 +46,27 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
 
   const pickedLocationRef = useRef<CommonLocation | null>(null)
   const destinationRef = useRef<CommonLocation | null>(null)
-  const waypointsRef = useRef<Array<ConfigPoiItem>>([])
+  const waypointsRef = useRef<Array<AMap.ConfigPoi>>([])
   const driverPositionRef = useRef<LngLat | null>(null)
   const draggedWaypointIndexRef = useRef<number | null>(null)
 
   const [keyword, setKeyword] = useState('')
-  const [poiList, setPoiList] = useState<Array<ConfigPoiItem>>([])
+  const [poiList, setPoiList] = useState<Array<AMap.ConfigPoi>>([])
   const [driverPosition, setDriverPosition] = useState<LngLat | null>(null)
   const [pickedLocation, setPickedLocation] = useState<CommonLocation | null>(
     null
   )
   const [destination, setDestination] = useState<CommonLocation | null>(null)
-  const [waypoints, setWaypoints] = useState<Array<ConfigPoiItem>>([])
+  const [waypoints, setWaypoints] = useState<Array<AMap.ConfigPoi>>([])
   const [drivingPolicy, setDrivingPolicy] = useState<number>(
     drivingPolicyList[0].value
   )
+
+  const [contextValue, setContextValue] = useState<AMapContextValue>({
+    map: null,
+    AMap: null,
+    openInfoWindow: () => {},
+  })
 
   useEffect(() => {
     pickedLocationRef.current = pickedLocation
@@ -94,7 +107,7 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
   const openInfoWindow = (params: {
     position: LngLat
     title: string
-    body: string
+    body?: string
     actions?: string
   }) => {
     const map = mapRef.current
@@ -114,7 +127,7 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
         line-height:1.5;
       ">
         <strong>${params.title}</strong>
-        <div style="margin-top:6px;">${params.body}</div>
+        <div style="margin-top:6px;">${params.body ?? ''}</div>
         ${
           params.actions
             ? `<div style="display:flex;gap:6px;margin-top:8px;flex-wrap:wrap;">${params.actions}</div>`
@@ -124,44 +137,6 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
     `)
 
     infoWindow.open(map, params.position)
-  }
-
-  const createMarker = (params: {
-    position: LngLat
-    type: EnumMarkerType
-    title: string
-    body: string
-    actions?: string
-    onClick?: () => void
-  }) => {
-    const map = mapRef.current
-    const AMapTyped = AMapRef.current
-
-    if (!map || !AMapTyped) return null
-
-    const marker = new AMapTyped.Marker({
-      map,
-      position: params.position,
-      icon: createMarkerIcon(AMapTyped, params.type),
-      offset: [-13, -30],
-      title: params.title,
-    })
-
-    marker.on('click', () => {
-      if (params.onClick) {
-        params.onClick()
-        return
-      }
-
-      openInfoWindow({
-        position: params.position,
-        title: params.title,
-        body: params.body,
-        actions: params.actions,
-      })
-    })
-
-    return marker
   }
 
   useEffect(() => {
@@ -178,35 +153,6 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
       policy: drivingPolicy,
     })
   }, [drivingPolicy])
-
-  useEffect(() => {
-    const map = mapRef.current
-
-    if (!map) return
-
-    waypointMarkerListRef.current.forEach(marker => {
-      map.remove(marker)
-    })
-
-    waypointMarkerListRef.current = waypoints
-      .map((item, index) => {
-        return createMarker({
-          position: item.location,
-          type: EnumMarkerType.WAYPOINT,
-          title: `途经点 ${index + 1}`,
-          body: `
-            <div>${item.name}</div>
-            <div>${item.address}</div>
-            <div>经度：${item.location[0]}</div>
-            <div>纬度：${item.location[1]}</div>
-          `,
-          actions: `
-            <button onclick="window.__amapAction?.startRoute()">重新规划</button>
-          `,
-        })
-      })
-      .filter((item): item is AMap.Marker => Boolean(item))
-  }, [waypoints])
 
   const handlePickMapPoint = (
     position: LngLat,
@@ -253,27 +199,6 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
         console.log('点选位置:', data)
 
         setPickedLocation(data)
-
-        if (pickMarkerRef.current) {
-          map.remove(pickMarkerRef.current)
-          pickMarkerRef.current = null
-        }
-
-        pickMarkerRef.current = createMarker({
-          position,
-          type: EnumMarkerType.PICKED,
-          title: '点选位置',
-          body: `
-          <div>${data.poiName || data.address}</div>
-          <div>经度：${data.longitude}</div>
-          <div>纬度：${data.latitude}</div>
-        `,
-          actions: `
-          <button onclick="window.__amapAction?.setPickedAsWaypoint()">设为途经点</button>
-          <button onclick="window.__amapAction?.setPickedAsDestination()">设为终点</button>
-          <button onclick="window.__amapAction?.startRouteByPicked()">导航</button>
-        `,
-        })
       }
 
       if (baseData.poiName || !placeSearch) {
@@ -311,30 +236,6 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
 
     if (!map) return
 
-    const position: LngLat = [location.longitude, location.latitude]
-
-    if (destinationMarkerRef.current) {
-      map.remove(destinationMarkerRef.current)
-      destinationMarkerRef.current = null
-    }
-
-    destinationMarkerRef.current = createMarker({
-      position,
-      type: EnumMarkerType.DESTINATION,
-      title: '终点',
-      body: `
-        <div>${location.poiName || location.address}</div>
-        <div>经度：${location.longitude}</div>
-        <div>纬度：${location.latitude}</div>
-        <div>省：${location.province}</div>
-        <div>市：${location.city}</div>
-        <div>区：${location.district}</div>
-      `,
-      actions: `
-        <button onclick="window.__amapAction?.startRoute()">导航</button>
-      `,
-    })
-
     setDestination(location)
 
     console.log('设置终点:', location)
@@ -355,7 +256,7 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
       return
     }
 
-    const waypoint: ConfigPoiItem = {
+    const waypoint: AMap.ConfigPoi = {
       id,
       name: location.poiName || location.address || '点选途经点',
       address: location.address,
@@ -387,17 +288,8 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
         (map?.getCenter ? [map.getCenter().lng, map.getCenter().lat] : null)
 
     const buildPoiList = (
-      pois: Array<{
-        id?: string
-        name?: string
-        address?: string
-        distance?: number
-        location?: {
-          lng?: number
-          lat?: number
-        }
-      }>
-    ): Array<ConfigPoiItem> => {
+      pois: Array<AMap.ConfigPoi>
+    ): Array<AMap.ConfigPoi> => {
       return pois
         .filter(
           item =>
@@ -439,9 +331,11 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
             return
           }
 
+          console.log('AutoComplete 搜索 Result:', autoResult)
+
           const tips = (autoResult.tips ?? []) as Array<ConfigAutoCompleteTip>
 
-          const list: Array<ConfigPoiItem> = tips
+          const list: Array<AMap.ConfigPoi> = tips
             .filter(item => item.name)
             .map(item => ({
               id: item.id || item.name,
@@ -469,7 +363,7 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
 
       const tips = (result.tips ?? []) as Array<ConfigAutoCompleteTip>
 
-      const list: Array<ConfigPoiItem> = tips
+      const list: Array<AMap.ConfigPoi> = tips
         .filter(item => item.name)
         .map(item => ({
           id: item.id || item.name,
@@ -485,7 +379,7 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
     })
   }
 
-  const handleSelectPoiAsPick = (poi: ConfigPoiItem, moveCenter = false) => {
+  const handleSelectPoiAsPick = (poi: AMap.ConfigPoi, moveCenter = false) => {
     const map = mapRef.current
 
     if (poi.location[0] !== 0 && poi.location[1] !== 0) {
@@ -568,8 +462,6 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
   }
 
   const handleClearRoute = () => {
-    const map = mapRef.current
-
     setWaypoints([])
     setDestination(null)
 
@@ -578,16 +470,6 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
     const panel = document.getElementById('route-panel')
     if (panel) {
       panel.innerHTML = ''
-    }
-
-    waypointMarkerListRef.current.forEach(marker => {
-      map?.remove(marker)
-    })
-    waypointMarkerListRef.current = []
-
-    if (map && destinationMarkerRef.current) {
-      map.remove(destinationMarkerRef.current)
-      destinationMarkerRef.current = null
     }
   }
 
@@ -678,7 +560,7 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
     let destroyed = false
 
     AMapLoader.load({
-      key: props.key,
+      key: props.aKey,
       version,
       plugins: [
         'AMap.Scale',
@@ -705,19 +587,11 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
 
       mapRef.current = map
 
-      map.addControl(new AMapTyped.Scale())
-      map.addControl(
-        new AMapTyped.ToolBar({
-          position: 'RB',
-          offset: [20, 60],
-        })
-      )
-      map.addControl(new AMapTyped.HawkEye({ isOpen: false }))
-      map.addControl(
-        new AMapTyped.ControlBar({
-          position: 'RT',
-        })
-      )
+      setContextValue({
+        map,
+        AMap: AMapTyped,
+        openInfoWindow,
+      })
 
       infoWindowRef.current = new AMapTyped.InfoWindow({
         offset: [0, -30],
@@ -743,68 +617,6 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
         policy: drivingPolicy,
       })
 
-      const geolocation = new AMapTyped.Geolocation({
-        enableHighAccuracy: false,
-        timeout: 20000,
-        maximumAge: 60000,
-        convert: true,
-        showButton: true,
-        showMarker: true,
-        showCircle: true,
-        zoomToAccuracy: true,
-        position: 'RB',
-        offset: [18, 20],
-      })
-
-      map.addControl(geolocation)
-
-      geolocation.getCurrentPosition((status, result) => {
-        if (!result || !result.position) {
-          return
-        }
-        const position: LngLat =
-          status === 'complete'
-            ? [result.position.lng, result.position.lat]
-            : [116.397428, 39.90923]
-
-        setDriverPosition(position)
-        map.setCenter(position)
-
-        driverMarkerRef.current = createMarker({
-          position,
-          type: EnumMarkerType.DRIVER,
-          title: '司机位置',
-          body: `
-            <div>经度：${position[0]}</div>
-            <div>纬度：${position[1]}</div>
-            <div>${
-              status === 'complete' ? '定位成功' : '定位失败，当前为默认位置'
-            }</div>
-          `,
-          actions: `
-            <button onclick="window.__amapAction?.startRoute()">从司机位置导航</button>
-          `,
-        })
-
-        if (status === 'complete') {
-          console.log('司机当前位置:', position)
-        } else {
-          console.warn('定位失败，使用默认位置:', result)
-        }
-      })
-
-      geolocation.on('complete', result => {
-        const lng = result?.position?.lng
-        const lat = result?.position?.lat
-        if (typeof lng !== 'number' || typeof lat !== 'number') return
-        const position: LngLat = [lng, lat]
-        setDriverPosition(position)
-        map.setCenter(position)
-        map.setZoom(17)
-        driverMarkerRef.current?.setPosition(position)
-        console.log('定位成功:', position)
-      })
-
       if (navigator.geolocation) {
         driverWatchIdRef.current = navigator.geolocation.watchPosition(
           position => {
@@ -814,10 +626,6 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
             ]
 
             setDriverPosition(nextPosition)
-
-            if (driverMarkerRef.current) {
-              driverMarkerRef.current.setPosition(nextPosition)
-            }
           },
           error => {
             console.warn('司机定位监听失败:', error)
@@ -848,10 +656,6 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
 
       AMapRef.current = null
       mapRef.current = null
-      pickMarkerRef.current = null
-      destinationMarkerRef.current = null
-      driverMarkerRef.current = null
-      waypointMarkerListRef.current = []
       infoWindowRef.current = null
       geocoderRef.current = null
       placeSearchRef.current = null
@@ -863,92 +667,101 @@ export const AMap = ({ version = '2.0', ...props }: types.ConfigProp) => {
   }, [])
 
   return (
-    <div className="relative w-full h-full">
-      <div className="absolute top-5 left-5 z-999 w-120 p-3 rounded-lg shadow-sm bg-white">
-        <Search
-          value={keyword}
-          list={poiList}
-          onChange={e => setKeyword(e.target.value)}
-          onKeyDown={e => {
-            if (e.key === 'Enter') handleSearch()
-          }}
-          onSelect={poi => {
-            handleSelectPoiAsPick(poi, true)
-            setPoiList([])
-          }}
-        />
-        <div className="flex gap-2 mt-2 flex-wrap">
-          {drivingPolicyList.map(item => (
-            <Button
-              key={item.value}
-              onClick={() => setDrivingPolicy(item.value)}
-              semanticColor={EnumSemanticColor.DARK}
-              variant={
-                drivingPolicy === item.value
-                  ? EnumVariant.SOLID
-                  : EnumVariant.OUTLINE
-              }
-            >
-              {item.label}
-            </Button>
-          ))}
-        </div>
-        <div className="flex gap-2 mt-2 flex-wrap">
-          <button onClick={handlePlanRoute}>规划驾车路线</button>
+    <AMapContext.Provider value={contextValue}>
+      <div className="relative w-full h-full">
+        {props.children}
 
-          <button onClick={handleExitRoute}>退出路线规划</button>
+        <DriverMaker position={driverPosition} />
+        <PickedMaker location={pickedLocation} />
+        <DestinationMaker location={destination} />
 
-          <button onClick={handleClearRoute}>清空路线</button>
-        </div>
-        {driverPosition && (
-          <div className="mt-2 text-sm text-gray-500">
-            司机位置：{driverPosition[0]}, {driverPosition[1]}
+        {waypoints.map((item, index) => (
+          <WaypointMaker
+            key={`${item.id}-${index}`}
+            poiItem={item}
+            index={index}
+          />
+        ))}
+
+        <div className="absolute top-5 left-5 z-999 w-120 p-3 rounded-lg shadow-sm bg-white">
+          <Search
+            value={keyword}
+            list={poiList}
+            onChange={e => setKeyword(e.target.value)}
+            onKeyDown={e => {
+              if (e.key === 'Enter') handleSearch()
+            }}
+            onSelect={poi => {
+              handleSelectPoiAsPick(poi, true)
+              setPoiList([])
+            }}
+          />
+          <div className="flex gap-2 mt-2 flex-wrap">
+            {drivingPolicyList.map(item => (
+              <Button
+                key={item.value}
+                onClick={() => setDrivingPolicy(item.value)}
+                semanticColor={EnumSemanticColor.DARK}
+                variant={
+                  drivingPolicy === item.value
+                    ? EnumVariant.SOLID
+                    : EnumVariant.OUTLINE
+                }
+              >
+                {item.label}
+              </Button>
+            ))}
           </div>
-        )}
-        {pickedLocation && (
-          <>
-            <Separator className="my-4" />
-            <Title className="mb-1">当前点选位置</Title>
-            <LocationCard location={pickedLocation} />
-          </>
-        )}
-        {destination && (
-          <>
-            <Separator className="my-2" />
-            <Title className="mt-b">终点位置</Title>
-            <LocationCard location={destination} />
-          </>
-        )}
-        {waypoints.length > 0 && (
-          <>
-            <Separator className="my-4" />
-            <Title className="mb-1">途经点，可拖拽排序</Title>
-            <div className="mt-2 max-h-40 overflow-auto rounded-md">
-              {waypoints.map((item, index) => (
-                <div
-                  key={`${item.id}-${index}`}
-                  draggable
-                  onDragStart={() => handleDragStartWaypoint(index)}
-                  onDragOver={handleDragOverWaypoint}
-                  onDrop={() => handleDropWaypoint(index)}
-                  className="flex justify-between align-middle gap-2 p-2 text-sm cursor-move border-b border-gray-200"
-                >
-                  <span>
-                    {index + 1}. {item.name}
-                  </span>
+          <div className="flex gap-2 mt-2 flex-wrap">
+            <button onClick={handlePlanRoute}>规划驾车路线</button>
 
-                  <button onClick={() => handleRemoveWaypoint(item.id)}>
-                    删除
-                  </button>
-                </div>
-              ))}
+            <button onClick={handleExitRoute}>退出路线规划</button>
+
+            <button onClick={handleClearRoute}>清空路线</button>
+          </div>
+          {driverPosition && (
+            <div className="mt-2 text-sm text-gray-500">
+              司机位置：{driverPosition[0]}, {driverPosition[1]}
             </div>
-          </>
-        )}
-        <div id="route-panel" className="text-sm overflow-auto max-h-55 mt-2" />
-      </div>
+          )}
+          {pickedLocation && (
+            <>
+              <Separator className="my-4" />
+              <Title className="mb-1">当前点选位置</Title>
+              <LocationCard location={pickedLocation} />
+            </>
+          )}
+          {destination && (
+            <>
+              <Separator className="my-2" />
+              <Title className="mt-b">终点位置</Title>
+              <LocationCard location={destination} />
+            </>
+          )}
+          <WaypointList
+            waypoints={waypoints}
+            onRemove={handleRemoveWaypoint}
+            onDragStart={handleDragStartWaypoint}
+            onDragOver={handleDragOverWaypoint}
+            onDrop={handleDropWaypoint}
+          />
+          <div
+            id="route-panel"
+            className="text-sm overflow-auto max-h-55 mt-2"
+          />
+        </div>
 
-      <div id="container" className="w-full h-full" />
-    </div>
+        <div id="container" className="w-full h-full" />
+      </div>
+    </AMapContext.Provider>
   )
 }
+
+export const AMap = Object.assign(AMapBase, {
+  ControlBar,
+  Scale,
+  ToolBar,
+  HawkEye,
+  Marker,
+  Geolocation,
+})

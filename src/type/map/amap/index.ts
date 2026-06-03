@@ -1,11 +1,5 @@
 export type LngLat = [number, number]
-
-export interface ConfigPoiItem {
-  id: string
-  name: string
-  address: string
-  location: LngLat
-}
+export type Offset = [number, number]
 
 export interface ConfigAutoCompleteTip {
   id?: string

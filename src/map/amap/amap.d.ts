@@ -20,7 +20,7 @@ declare global {
 
     type LngLatLike = [number, number]
 
-    type AMapLocation = {
+    interface ConfigAMapLocation {
       lng: number
       lat: number
     }
@@ -41,19 +41,27 @@ declare global {
       constructor(options?: Record<string, unknown>)
     }
 
+    interface ConfigGeolocationResult {
+      position?: ConfigAMapLocation
+      info?: string
+      message?: string
+      originMessage?: string
+      status?: number
+      [key: string]: unknown
+    }
+
+    interface ConfigPoi {
+      id: string
+      name: string
+      address: string
+      location: AMapLocation
+      distance?: number
+    }
+
     class Geolocation extends Control {
       constructor(options?: Record<string, unknown>)
 
-      getCurrentPosition(
-        callback: AMapCallback<{
-          position?: AMapLocation
-          info?: string
-          message?: string
-          originMessage?: string
-          status?: number
-          [key: string]: unknown
-        }>
-      ): void
+      getCurrentPosition(callback: AMapCallback<ConfigGeolocationResult>): void
     }
 
     class PlaceSearch {
@@ -67,12 +75,7 @@ declare global {
         keyword: string,
         callback: AMapCallback<{
           poiList?: {
-            pois?: Array<{
-              id?: string
-              name?: string
-              address?: string
-              location?: AMapLocation
-            }>
+            pois?: Array<ConfigPoi>
           }
           [key: string]: unknown
         }>
@@ -84,17 +87,22 @@ declare global {
         radius: number,
         callback: AMapCallback<{
           poiList?: {
-            pois?: Array<{
-              id?: string
-              name?: string
-              address?: string
-              location?: AMapLocation
-              distance?: number
-            }>
+            pois?: Array<ConfigPoi>
           }
           [key: string]: unknown
         }>
       ): void
+    }
+
+    interface ConfigAutoCompleteTip {
+      id: string
+      location: ConfigAMapLocation
+      name: string
+      adcode: string
+      address: string
+      city: Array<unknown>
+      district: string
+      typecode: string
     }
 
     class AutoComplete {
@@ -103,13 +111,7 @@ declare global {
       search(
         keyword: string,
         callback: AMapCallback<{
-          tips?: Array<{
-            id?: string
-            name?: string
-            district?: string
-            address?: string
-            location?: AMapLocation
-          }>
+          tips?: Array<ConfigAutoCompleteTip>
           [key: string]: unknown
         }>
       ): void

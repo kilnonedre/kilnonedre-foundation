@@ -1,5 +1,8 @@
+import { ReactNode } from 'react'
+
 export interface ConfigProp {
-  key: string
+  aKey: string
   securityCode: string
   version?: string
+  children?: ReactNode
 }
