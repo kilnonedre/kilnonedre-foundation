@@ -6,7 +6,7 @@ import { cn } from '@/util'
 import type * as types from './type'
 
 export const Button = ({
-  semanticColor = EnumSemanticColor.PRIMARY,
+  semanticColor = EnumSemanticColor.DARK,
   variant = EnumVariant.SOLID,
   children,
   className,
