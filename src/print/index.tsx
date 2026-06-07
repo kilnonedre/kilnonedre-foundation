@@ -8,7 +8,6 @@ import {
   useRef,
   useState,
 } from 'react'
-import { renderToStaticMarkup } from 'react-dom/server'
 import { Rnd } from 'react-rnd'
 import { Button } from '@/components'
 import {
@@ -247,7 +246,9 @@ export const SimplePrintDesignerDemo = () => {
     )
   }
 
-  const printTemplate = (data: types.ConfigPrintData) => {
+  const printTemplate = async (data: types.ConfigPrintData) => {
+    const { renderToStaticMarkup } = await import('react-dom/server')
+
     const printHtml = renderToStaticMarkup(
       <PrintRenderer
         paperWidth={paperWidth}

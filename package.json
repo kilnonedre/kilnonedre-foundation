@@ -15,10 +15,18 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./map": {
+      "types": "./dist/map.d.ts",
+      "import": "./dist/map.js"
+    },
+    "./print": {
+      "types": "./dist/print.d.ts",
+      "import": "./dist/print.js"
+    },
     "./index.css": "./dist/index.css"
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --dts --clean",
+    "build": "tsup",
     "dev": "tsup src/index.ts --format esm --dts --watch",
     "typecheck": "tsc --noEmit",
     "prepare": "husky",
