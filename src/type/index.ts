@@ -1,4 +1,5 @@
 export * from './common'
+export * from './config'
 export * from './enum'
 export * from './map'
 export * from './uuid'

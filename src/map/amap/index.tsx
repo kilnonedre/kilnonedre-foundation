@@ -1,6 +1,5 @@
 /* eslint-disable complexity */
 import { DragEvent, useEffect, useRef, useState } from 'react'
-import AMapLoader from '@amap/amap-jsapi-loader'
 import { Button, Title } from '@/components'
 import LocationCard from '@/map/amap/component/location-card'
 import Search from '@/map/amap/component/search'
@@ -504,13 +503,6 @@ const AMapBase = ({ version = '2.0', ...props }: types.ConfigProp) => {
       item => item.location
     )
 
-    console.log('路线规划入参:', {
-      policy: drivingPolicy,
-      start,
-      end,
-      waypoints: waypointPositions,
-    })
-
     driving.clear()
 
     driving.search(
@@ -559,21 +551,25 @@ const AMapBase = ({ version = '2.0', ...props }: types.ConfigProp) => {
 
     let destroyed = false
 
-    AMapLoader.load({
-      key: props.aKey,
-      version,
-      plugins: [
-        'AMap.Scale',
-        'AMap.ToolBar',
-        'AMap.HawkEye',
-        'AMap.ControlBar',
-        'AMap.Geolocation',
-        'AMap.Geocoder',
-        'AMap.PlaceSearch',
-        'AMap.AutoComplete',
-        'AMap.Driving',
-      ],
-    }).then(AMapInstance => {
+    const initMap = async () => {
+      const { default: AMapLoader } = await import('@amap/amap-jsapi-loader')
+
+      const AMapInstance = await AMapLoader.load({
+        key: props.aKey,
+        version,
+        plugins: [
+          'AMap.Scale',
+          'AMap.ToolBar',
+          'AMap.HawkEye',
+          'AMap.ControlBar',
+          'AMap.Geolocation',
+          'AMap.Geocoder',
+          'AMap.PlaceSearch',
+          'AMap.AutoComplete',
+          'AMap.Driving',
+        ],
+      })
+
       if (destroyed) return
 
       const AMapTyped = AMapInstance as ConfigAMapWithDriving
@@ -642,12 +638,14 @@ const AMapBase = ({ version = '2.0', ...props }: types.ConfigProp) => {
         const position: LngLat = [event.lnglat.lng, event.lnglat.lat]
         handlePickMapPoint(position)
       })
-    })
+    }
+
+    initMap()
 
     return () => {
       destroyed = true
 
-      if (driverWatchIdRef.current !== null) {
+      if (driverWatchIdRef.current !== null && navigator.geolocation) {
         navigator.geolocation.clearWatch(driverWatchIdRef.current)
       }
 
@@ -661,6 +659,7 @@ const AMapBase = ({ version = '2.0', ...props }: types.ConfigProp) => {
       placeSearchRef.current = null
       autoCompleteRef.current = null
       drivingRef.current = null
+      driverWatchIdRef.current = null
 
       delete window.__amapAction
     }

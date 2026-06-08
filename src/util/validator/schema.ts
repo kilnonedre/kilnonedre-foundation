@@ -54,11 +54,18 @@ export const zIdCard = (label = '身份证号') =>
     .regex(/^\d{15}$|^\d{17}(\d|X|x)$/, `${label}格式不正确`)
 
 export const zIdCardOptional = (label = '身份证号') =>
-  z
-    .string()
-    .trim()
-    .regex(/^\d{15}$|^\d{17}(\d|X|x)$/, `${label}格式不正确`)
-    .optional()
+  z.preprocess(
+    value => {
+      if (typeof value !== 'string') return value
+
+      const trimmed = value.trim()
+      return trimmed === '' ? undefined : trimmed
+    },
+    z
+      .string()
+      .regex(/^\d{15}$|^\d{17}(\d|X|x)$/, `${label}格式不正确`)
+      .optional()
+  )
 
 export const zEmail = (max = 32) =>
   z

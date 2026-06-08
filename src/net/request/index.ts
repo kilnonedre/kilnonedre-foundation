@@ -1,87 +1,101 @@
-// import { fetchWithInterceptor } from '../middleware'
-// import { getToken, isFormData } from './utils'
+import type * as types from './type'
 
-// export const Get = (url: string, params?: object, config?: object) => {
-//   let suffix = ''
-//   if (params) {
-//     const query = Object.entries(params)
-//       .filter(
-//         ([_, value]) => value !== undefined && value !== null && value !== ''
-//       )
-//       .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
-//       .join('&')
+const isFormData = (value: unknown): value is FormData => {
+  return typeof FormData !== 'undefined' && value instanceof FormData
+}
 
-//     if (query) {
-//       suffix = `?${query}`
-//     }
-//   }
+export const createHttp = (
+  fetchWithInterceptor: types.ConfigFetchWithInterceptor
+) => {
+  const Get = (url: string, params?: object, config?: RequestInit) => {
+    let suffix = ''
 
-//   return fetchWithInterceptor(`${url}${suffix}`, {
-//     method: 'GET',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     ...getToken(),
-//     ...config,
-//   })
-// }
+    if (params) {
+      const query = Object.entries(params)
+        .filter(
+          ([_, value]) => value !== undefined && value !== null && value !== ''
+        )
+        .map(([key, value]) => `${key}=${encodeURIComponent(String(value))}`)
+        .join('&')
 
-// export const Post = (url: string, params?: object, config?: object) => {
-//   const isFd = isFormData(params)
-//   const body = (isFd ? params : JSON.stringify(params)) as FormData | string
-//   return fetchWithInterceptor(url, {
-//     method: 'POST',
-//     ...(isFd
-//       ? {}
-//       : {
-//           headers: {
-//             'Content-Type': 'application/json',
-//           },
-//         }),
-//     body,
-//     ...getToken(),
-//     ...config,
-//   })
-// }
+      if (query) {
+        suffix = `?${query}`
+      }
+    }
 
-// export const Put = (url: string, params?: object, config?: object) => {
-//   const body = (isFormData(params) ? params : JSON.stringify(params)) as
-//     | FormData
-//     | string
-//   return fetchWithInterceptor(url, {
-//     method: 'PUT',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body,
-//     ...getToken(),
-//     ...config,
-//   })
-// }
+    return fetchWithInterceptor(`${url}${suffix}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      ...config,
+    })
+  }
 
-// export const Patch = (url: string, params?: object, config?: object) => {
-//   const body = (isFormData(params) ? params : JSON.stringify(params)) as
-//     | FormData
-//     | string
-//   return fetchWithInterceptor(url, {
-//     method: 'PATCH',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body,
-//     ...getToken(),
-//     ...config,
-//   })
-// }
+  const Post = (url: string, params?: object, config?: RequestInit) => {
+    const isFd = isFormData(params)
+    const body = (isFd ? params : JSON.stringify(params)) as FormData | string
 
-// export const Delete = (url: string, params?: object, config?: object) => {
-//   return fetchWithInterceptor(url, {
-//     method: 'DELETE',
-//     headers: {
-//       'Content-Type': 'application/json',
-//     },
-//     body: JSON.stringify(params),
-//     ...getToken(),
-//     ...config,
-//   })
-// }
+    return fetchWithInterceptor(url, {
+      method: 'POST',
+      ...(isFd
+        ? {}
+        : {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }),
+      body,
+      ...config,
+    })
+  }
+
+  const Put = (url: string, params?: object, config?: RequestInit) => {
+    const body = (isFormData(params) ? params : JSON.stringify(params)) as
+      | FormData
+      | string
+
+    return fetchWithInterceptor(url, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body,
+      ...config,
+    })
+  }
+
+  const Patch = (url: string, params?: object, config?: RequestInit) => {
+    const body = (isFormData(params) ? params : JSON.stringify(params)) as
+      | FormData
+      | string
+
+    return fetchWithInterceptor(url, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body,
+      ...config,
+    })
+  }
+
+  const Delete = (url: string, params?: object, config?: RequestInit) => {
+    return fetchWithInterceptor(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(params),
+      ...config,
+    })
+  }
+
+  return {
+    Get,
+    Post,
+    Put,
+    Patch,
+    Delete,
+  }
+}

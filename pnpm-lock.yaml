@@ -35,9 +35,6 @@ importers:
       dayjs:
         specifier: ^1.11.21
         version: 1.11.21
-      foundation:
-        specifier: link:../../../Library/pnpm/global/5/node_modules/@kilnonedre/foundation
-        version: link:../../../Library/pnpm/global/5/node_modules/@kilnonedre/foundation
       lucide-react:
         specifier: ^1.17.0
         version: 1.17.0(react@19.2.6)

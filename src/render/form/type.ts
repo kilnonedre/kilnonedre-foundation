@@ -11,9 +11,9 @@ export interface ConfigRenderBase<T extends FieldValues> {
   tip?: string
 }
 
-export interface ConfigRenderPasswordInput<
-  T extends FieldValues,
-> extends ConfigRenderBase<T> {
-  hidden: boolean
-  onHiddenChange: (_hidden: boolean) => void
+export interface ConfigRenderPresetBase<T extends FieldValues> {
+  mode?: EnumFormMode
+  form: UseFormReturn<T>
+  required?: boolean
+  tip?: string
 }

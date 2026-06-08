@@ -34,7 +34,7 @@ function mergeDateAndTime(datePart: Date, timeHHmmss: string) {
   return d
 }
 
-export const FormTimePicker = (props: types.ConfigProp) => {
+export const TimePicker = (props: types.ConfigProp) => {
   const [open, setOpen] = React.useState(false)
 
   const dateBtnText = props.value

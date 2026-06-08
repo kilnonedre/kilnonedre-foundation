@@ -5,7 +5,7 @@ export interface ConfigProp {
   id: string
   name: string
   required?: boolean
-  mode: EnumFormMode
+  mode?: EnumFormMode
   label?: string
   invalid?: boolean
   error?: string

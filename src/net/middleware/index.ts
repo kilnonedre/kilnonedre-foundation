@@ -1,112 +1,117 @@
-// import { eventBus } from '@/shared/event-bus'
-// import { ConfigApiRespT } from '@/type/api'
+import { ConfigApiRespT } from '@/type/api'
+import type * as types from './type'
 
-// let refreshPromise: Promise<string> | null = null
+export const createFetchWithInterceptor = (props: types.ConfigProp) => {
+  let refreshPromise: Promise<string> | null = null
 
-// const getOrCreateRefreshPromise = (
-//   refreshTokenFn: () => Promise<string>
-// ): Promise<string> => {
-//   if (!refreshPromise) {
-//     refreshPromise = (async () => {
-//       const auth = useAuthStore.getState()
-//       const rtk = auth.refreshToken
-//       const userId = auth.id
-//       if (!rtk || !userId) throw new Error('NO_REFRESH_TOKEN')
+  const successCode = props.successCode ?? '200'
+  const operatorType = props.operatorType ?? 'SELLER'
 
-//       const res = await RefreshAccessToken({
-//         refreshToken: rtk,
-//         userId,
-//       })
+  const getOrCreateRefreshPromise = (): Promise<string> => {
+    if (!refreshPromise) {
+      refreshPromise = (async () => {
+        const refreshToken = props.getRefreshToken()
+        const userId = props.getUserId()
 
-//       if (res.code !== '200' || !res.data?.accessToken) {
-//         throw new Error('REFRESH_FAILED_' + (res.msg || 'UNKNOWN'))
-//       }
+        if (!refreshToken || !userId) {
+          throw new Error('NO_REFRESH_TOKEN')
+        }
 
-//       auth.setAccessToken(res.data.accessToken)
+        const res = await props.refreshAccessToken({
+          refreshToken,
+          userId,
+        })
 
-//       // 如果后端有 refreshToken 轮转，就打开这一段
-//       // if (res.data.refreshToken) {
-//       //   auth.setRefreshToken(res.data.refreshToken)
-//       // }
+        if (res.code !== successCode || !res.data?.accessToken) {
+          throw new Error('REFRESH_FAILED_' + (res.msg || 'UNKNOWN'))
+        }
 
-//       return res.data.accessToken
-//     })().finally(() => {
-//       refreshPromise = null
-//     })
-//   }
+        props.setAccessToken(res.data.accessToken)
 
-//   return refreshPromise
-// }
+        // if (res.data.refreshToken && props.setRefreshToken) {
+        //   props.setRefreshToken(res.data.refreshToken)
+        // }
 
-// const clearAuthAndNotify = (
-//   url: string,
-//   onUnauthorized?: (_url: string) => void
-// ) => {
-//   onUnauthorized?.(url)
-//   eventBus.emit('HTTP:UNAUTH', {
-//     status: 401,
-//     url,
-//   })
-// }
+        // props.onRefreshSuccess?.()
 
-// const withAuthHeader = (
-//   options: RequestInit = {},
-//   extraHeaders?: Record<string, string>
-// ): RequestInit => {
-//   const headers = new Headers(options.headers || {})
+        return res.data.accessToken
+      })().finally(() => {
+        refreshPromise = null
+      })
+    }
 
-//   Object.entries(extraHeaders ?? {}).forEach(([key, value]) => {
-//     headers.set(key, value)
-//   })
+    return refreshPromise
+  }
 
-//   return {
-//     ...options,
-//     headers,
-//   }
-// }
+  const clearAuthAndNotify = (url: string) => {
+    props.clearAuth()
+    props.onUnauthorized?.({ status: 401, url })
+  }
 
-// export const fetchWithInterceptor = async <T = object>(
-//   url: string,
-//   options: RequestInit = {},
-//   onUnauthorized?: (_url: string) => void
-// ): Promise<ConfigApiRespT<T>> => {
-//   const request = () => fetch(url, withAuthHeader(options))
+  const withAuthHeader = (options: RequestInit = {}): RequestInit => {
+    const headers = new Headers(options.headers || {})
 
-//   let response = await request()
+    const accessToken = props.getAccessToken()
+    const merchantId = props.getMerchantId?.()
 
-//   if (response.status === 401) {
-//     try {
-//       await getOrCreateRefreshPromise()
-//     } catch (e) {
-//       clearAuthAndNotify(url, onUnauthorized)
-//       throw e
-//     }
+    headers.set('X-Operator-Type', operatorType)
 
-//     response = await request()
+    if (accessToken) {
+      headers.set('Authorization', `Bearer ${accessToken}`)
+    }
 
-//     if (response.status === 401) {
-//       clearAuthAndNotify(url, onUnauthorized)
-//       throw new Error('UNAUTHORIZED')
-//     }
-//   }
+    if (merchantId) {
+      headers.set('X-Merchant-Id', merchantId)
+    }
 
-//   if (!response.ok) {
-//     eventBus.emit('HTTP:ERR', {
-//       status: response.status,
-//       url,
-//       method: options.method || 'GET',
-//     })
-//   }
+    return {
+      ...options,
+      headers,
+    }
+  }
 
-//   const json = (await response.json()) as ConfigApiRespT<T>
+  return async function fetchWithInterceptor<T = object>(
+    url: string,
+    options: RequestInit = {}
+  ): Promise<ConfigApiRespT<T>> {
+    const request = () => fetch(url, withAuthHeader(options))
 
-//   if (json.code !== '200') {
-//     eventBus.emit('API:ERR', {
-//       url,
-//       code: json.code,
-//       msg: json.msg,
-//     })
-//   }
+    let response = await request()
 
-//   return json
-// }
+    if (response.status === 401) {
+      try {
+        await getOrCreateRefreshPromise()
+      } catch (e) {
+        clearAuthAndNotify(url)
+        throw e
+      }
+
+      response = await request()
+
+      if (response.status === 401) {
+        clearAuthAndNotify(url)
+        throw new Error('UNAUTHORIZED')
+      }
+    }
+
+    if (!response.ok) {
+      props.onHttpError?.({
+        status: response.status,
+        url,
+        method: options.method || 'GET',
+      })
+    }
+
+    const json = (await response.json()) as ConfigApiRespT<T>
+
+    if (json.code !== successCode) {
+      props.onApiError?.({
+        url,
+        code: json.code,
+        msg: json.msg,
+      })
+    }
+
+    return json
+  }
+}

@@ -1,19 +1,17 @@
 import { ReactNode } from 'react'
 import { FieldValues, Path, UseFormReturn } from 'react-hook-form'
-import { EyeIcon, EyeOffIcon } from 'lucide-react'
-import { FieldController, FieldGroup } from '@/components'
+import { FieldGroup } from '@/components'
+import { FormTextarea } from '@/render/form/form-textarea'
 import { Button } from '@/shadcn/components/button'
 import { DialogClose, DialogFooter } from '@/shadcn/components/dialog'
-import { Input } from '@/shadcn/components/input'
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupInput,
-} from '@/shadcn/components/input-group'
-import { Textarea } from '@/shadcn/components/textarea'
 import { EnumFormMode } from '@/type'
-import type * as types from './type'
 
+export * from './form-checkbox'
+export * from './form-enum-select'
+export * from './form-input'
+export * from './form-password'
+export * from './form-textarea'
+export * from './form-time-picker'
 export * from './type'
 
 export const getSuccessMessage = (mode: EnumFormMode) => {
@@ -87,97 +85,17 @@ export const renderBody = <T extends FieldValues>(
     case EnumFormMode.DELETE:
       return (
         <FieldGroup>
-          {renderTextarea({
-            mode,
-            form,
-            id: 'updatedReason',
-            name: 'updatedReason' as Path<T>,
-            label: '删除原因',
-          })}
+          <FormTextarea
+            mode={mode}
+            form={form}
+            id="updatedReason"
+            name={'updatedReason' as Path<T>}
+            label="删除原因"
+          />
         </FieldGroup>
       )
 
     default:
       return formFields()
   }
-}
-
-export const renderTextarea = <T extends FieldValues>(
-  props: types.ConfigRenderBase<T>
-) => {
-  return (
-    <FieldController
-      {...props}
-      control={props.form.control}
-      required={props.required ?? true}
-    >
-      {({ field, fieldState, id }) => (
-        <Textarea
-          {...field}
-          id={id}
-          rows={4}
-          className="resize-none"
-          aria-invalid={fieldState.invalid}
-        />
-      )}
-    </FieldController>
-  )
-}
-
-export const renderInput = <T extends FieldValues>(
-  props: types.ConfigRenderBase<T>
-) => {
-  return (
-    <FieldController
-      {...props}
-      control={props.form.control}
-      required={props.required ?? true}
-    >
-      {({ field, fieldState, id }) => (
-        <Input {...field} id={id} aria-invalid={fieldState.invalid} />
-      )}
-    </FieldController>
-  )
-}
-
-export const renderPasswordInput = <T extends FieldValues>(
-  props: types.ConfigRenderPasswordInput<T>
-) => {
-  return (
-    <FieldController
-      {...props}
-      control={props.form.control}
-      required={props.required ?? true}
-    >
-      {({ field, fieldState, id }) => (
-        <InputGroup>
-          <InputGroupInput
-            {...field}
-            id={id}
-            type={props.hidden ? 'password' : 'text'}
-            aria-invalid={fieldState.invalid}
-            className="pr-10"
-          />
-
-          <InputGroupAddon align="inline-end" className="cursor-pointer">
-            {props.hidden ? (
-              <EyeOffIcon
-                onClick={e => {
-                  e.stopPropagation()
-                  props.onHiddenChange(false)
-                }}
-              />
-            ) : (
-              <EyeIcon
-                onClick={e => {
-                  e.stopPropagation()
-                  props.onHiddenChange(true)
-                }}
-              />
-            )}
-          </InputGroupAddon>
-        </InputGroup>
-      )}
-    </FieldController>
-  )
 }
