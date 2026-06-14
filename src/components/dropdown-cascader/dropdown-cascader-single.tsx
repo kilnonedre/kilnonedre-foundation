@@ -4,7 +4,7 @@ import * as React from 'react'
 import { ChevronDown } from 'lucide-react'
 import {
   ConfigCascaderOption,
-  ConfigDropdownCascaderSingleProp,
+  ConfigDropdownCascaderSingleWithOptionsProp,
 } from '@/components/dropdown-cascader/type'
 import { Button } from '@/shadcn/components/button'
 import {
@@ -15,7 +15,7 @@ import {
 import { getOptionMap, renderCascaderNodes } from './dropdown-cascader-base'
 
 export const DropdownCascaderSingle = (
-  props: ConfigDropdownCascaderSingleProp
+  props: ConfigDropdownCascaderSingleWithOptionsProp
 ) => {
   const optionMap = React.useMemo(
     () => getOptionMap(props.options),

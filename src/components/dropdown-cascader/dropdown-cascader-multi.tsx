@@ -4,7 +4,7 @@ import * as React from 'react'
 import { ChevronDown, X } from 'lucide-react'
 import {
   ConfigCascaderOption,
-  ConfigDropdownCascaderMultiProp,
+  ConfigDropdownCascaderMultiWithOptionsProp,
 } from '@/components/dropdown-cascader/type'
 import { Button } from '@/shadcn/components/button'
 import {
@@ -24,7 +24,7 @@ const toggle = (list: Array<string>, value: string) => {
 export const DropdownCascaderMulti = ({
   value = [],
   ...props
-}: ConfigDropdownCascaderMultiProp) => {
+}: ConfigDropdownCascaderMultiWithOptionsProp) => {
   const optionMap = React.useMemo(
     () => getOptionMap(props.options),
     [props.options]

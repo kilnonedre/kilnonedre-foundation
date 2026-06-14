@@ -85,15 +85,20 @@ export const zPhone = (max = 11) =>
     .regex(/^1[3-9]\d{9}$/, '请输入正确的手机号')
     .max(max, `手机号最多 ${max} 位`)
 
-export const zId = (label = 'ID') =>
+export const zIdRequired = (label = 'ID') =>
   z
     .string({
       message: `请选择${label}`,
     })
     .uuid(`${label}格式不正确`)
 
-export const zIds = (label = 'ID') =>
-  z.array(zId(label)).min(1, `至少选择一个${label}`)
+export const zIdOptional = (label = 'ID') => zIdRequired(label).optional()
+
+export const zIdsRequired = (label = 'ID') =>
+  z.array(zIdRequired(label)).min(1, `至少选择一个${label}`)
+
+export const zIdsOptional = (label = 'ID') =>
+  z.array(zIdRequired(label)).optional()
 
 export const zTexts = (label = '内容') =>
   z.array(z.string()).min(1, `至少选择一个${label}`)

@@ -1,11 +1,10 @@
 import { ChangeEventHandler, KeyboardEventHandler } from 'react'
-import { ConfigPoiItem } from '@/type'
 
 export interface ConfigProp {
   value?: string
-  list: Array<ConfigPoiItem>
+  list: Array<AMap.ConfigPoi>
   placeholder?: string
   onChange?: ChangeEventHandler<HTMLInputElement>
   onKeyDown?: KeyboardEventHandler<HTMLInputElement>
-  onSelect?: (item: ConfigPoiItem) => void
+  onSelect?: (item: AMap.ConfigPoi) => void
 }

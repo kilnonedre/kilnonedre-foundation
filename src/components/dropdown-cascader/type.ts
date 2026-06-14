@@ -5,8 +5,11 @@ export interface ConfigCascaderOption {
   children?: Array<ConfigCascaderOption>
 }
 
-export interface ConfigDropdownCascaderMultiProp {
+export interface ConfigOptions {
   options: Array<ConfigCascaderOption>
+}
+
+export interface ConfigDropdownCascaderMultiProp {
   value?: Array<string>
   placeholder?: string
   onValueChange?: (
@@ -19,7 +22,6 @@ export interface ConfigDropdownCascaderMultiProp {
 }
 
 export interface ConfigDropdownCascaderSingleProp {
-  options: Array<ConfigCascaderOption>
   value?: string
   placeholder?: string
   onValueChange?: (
@@ -30,3 +32,9 @@ export interface ConfigDropdownCascaderSingleProp {
     }
   ) => void
 }
+
+export type ConfigDropdownCascaderMultiWithOptionsProp = ConfigOptions &
+  ConfigDropdownCascaderMultiProp
+
+export type ConfigDropdownCascaderSingleWithOptionsProp = ConfigOptions &
+  ConfigDropdownCascaderSingleProp

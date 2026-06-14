@@ -1,5 +1,12 @@
 /* eslint-disable complexity */
-import { DragEvent, useEffect, useRef, useState } from 'react'
+import {
+  Children,
+  DragEvent,
+  isValidElement,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { Button, Title } from '@/components'
 import LocationCard from '@/map/amap/component/location-card'
 import Search from '@/map/amap/component/search'
@@ -198,6 +205,7 @@ const AMapBase = ({ version = '2.0', ...props }: types.ConfigProp) => {
         console.log('点选位置:', data)
 
         setPickedLocation(data)
+        props.onPickedLocationChange?.(data)
       }
 
       if (baseData.poiName || !placeSearch) {
@@ -522,6 +530,8 @@ const AMapBase = ({ version = '2.0', ...props }: types.ConfigProp) => {
     )
   }
 
+  const lastHotspotClickAtRef = useRef(0)
+
   useEffect(() => {
     window._AMapSecurityConfig = {
       securityJsCode: props.securityCode,
@@ -579,6 +589,8 @@ const AMapBase = ({ version = '2.0', ...props }: types.ConfigProp) => {
         zoom: 15,
         viewMode: '3D',
         terrain: true,
+        isHotspot: true,
+        center: props.center,
       })
 
       mapRef.current = map
@@ -634,8 +646,22 @@ const AMapBase = ({ version = '2.0', ...props }: types.ConfigProp) => {
         )
       }
 
-      map.on('click', event => {
+      map.on('hotspotclick', event => {
+        lastHotspotClickAtRef.current = Date.now()
+
         const position: LngLat = [event.lnglat.lng, event.lnglat.lat]
+
+        handlePickMapPoint(position, {
+          id: event.id,
+          name: event.name,
+        })
+      })
+
+      map.on('click', event => {
+        if (Date.now() - lastHotspotClickAtRef.current < 100) return
+
+        const position: LngLat = [event.lnglat.lng, event.lnglat.lat]
+
         handlePickMapPoint(position)
       })
     }
@@ -664,6 +690,10 @@ const AMapBase = ({ version = '2.0', ...props }: types.ConfigProp) => {
       delete window.__amapAction
     }
   }, [])
+
+  const hasGeolocation = Children.toArray(props.children).some(child => {
+    return isValidElement(child) && child.type === Geolocation
+  })
 
   return (
     <AMapContext.Provider value={contextValue}>
@@ -695,33 +725,38 @@ const AMapBase = ({ version = '2.0', ...props }: types.ConfigProp) => {
               setPoiList([])
             }}
           />
-          <div className="flex gap-2 mt-2 flex-wrap">
-            {drivingPolicyList.map(item => (
-              <Button
-                key={item.value}
-                onClick={() => setDrivingPolicy(item.value)}
-                semanticColor={EnumSemanticColor.DARK}
-                variant={
-                  drivingPolicy === item.value
-                    ? EnumVariant.SOLID
-                    : EnumVariant.OUTLINE
-                }
-              >
-                {item.label}
-              </Button>
-            ))}
-          </div>
-          <div className="flex gap-2 mt-2 flex-wrap">
-            <button onClick={handlePlanRoute}>规划驾车路线</button>
+          {hasGeolocation && (
+            <>
+              <div className="flex gap-2 mt-2 flex-wrap">
+                {drivingPolicyList.map(item => (
+                  <Button
+                    key={item.value}
+                    onClick={() => setDrivingPolicy(item.value)}
+                    semanticColor={EnumSemanticColor.DARK}
+                    variant={
+                      drivingPolicy === item.value
+                        ? EnumVariant.SOLID
+                        : EnumVariant.OUTLINE
+                    }
+                  >
+                    {item.label}
+                  </Button>
+                ))}
+              </div>
+              <div className="flex gap-2 mt-2 flex-wrap">
+                <button onClick={handlePlanRoute}>规划驾车路线</button>
 
-            <button onClick={handleExitRoute}>退出路线规划</button>
+                <button onClick={handleExitRoute}>退出路线规划</button>
 
-            <button onClick={handleClearRoute}>清空路线</button>
-          </div>
-          {driverPosition && (
-            <div className="mt-2 text-sm text-gray-500">
-              司机位置：{driverPosition[0]}, {driverPosition[1]}
-            </div>
+                <button onClick={handleClearRoute}>清空路线</button>
+              </div>
+
+              {driverPosition && (
+                <div className="mt-2 text-sm text-gray-500">
+                  司机位置：{driverPosition[0]}, {driverPosition[1]}
+                </div>
+              )}
+            </>
           )}
           {pickedLocation && (
             <>
@@ -744,10 +779,7 @@ const AMapBase = ({ version = '2.0', ...props }: types.ConfigProp) => {
             onDragOver={handleDragOverWaypoint}
             onDrop={handleDropWaypoint}
           />
-          <div
-            id="route-panel"
-            className="text-sm overflow-auto max-h-55 mt-2"
-          />
+          <div id="route-panel" className="text-sm overflow-auto max-h-55" />
         </div>
 
         <div id="container" className="w-full h-full" />
