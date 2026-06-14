@@ -7,6 +7,7 @@ import { DialogClose, DialogFooter } from '@/shadcn/components/dialog'
 import { EnumFormMode } from '@/type'
 
 export * from './form-checkbox'
+export * from './form-color'
 export * from './form-enum-select'
 export * from './form-input'
 export * from './form-map-select'
@@ -85,7 +86,7 @@ export const renderBody = <T extends FieldValues>(
   switch (mode) {
     case EnumFormMode.DELETE:
       return (
-        <FieldGroup>
+        <FieldGroup singleColumn>
           <FormTextarea
             mode={mode}
             form={form}

@@ -1,4 +1,5 @@
 export * from './bool-to-text'
+export * from './build_uploader_url'
 export * from './cn'
 export * from './date'
 export * from './enum-to-options'

@@ -1,4 +1,4 @@
-export interface ConfigProps {
+export interface ConfigProp {
   value?: string
   placeholder?: string
   widthClassName?: string

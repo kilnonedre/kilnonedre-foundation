@@ -28,7 +28,7 @@ const toLngLat = (
   return [result.position.lng, result.position.lat]
 }
 
-export const Geolocation = (_props: types.ConfigProps) => {
+export const Geolocation = (_props: types.ConfigProp) => {
   const props = {
     enableHighAccuracy: false,
     timeout: 20000,

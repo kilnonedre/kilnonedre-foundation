@@ -28,13 +28,20 @@ export const enumValues = <T extends Record<string, string>>(obj: T) =>
   Object.values(obj) as [T[keyof T], ...T[keyof T][]]
 
 export const zTextOptional = (label: string, min = 1, max = 32) =>
-  z
-    .string()
-    .trim()
-    .max(max, `${label}最多 ${max} 个字符`)
-    .refine(v => v === '' || v.length >= min, {
-      message: `${label}至少 ${min} 个字符`,
-    })
+  z.preprocess(
+    value => {
+      if (typeof value !== 'string') return value
+
+      const trimmed = value.trim()
+
+      return trimmed === '' ? undefined : trimmed
+    },
+    z
+      .string()
+      .min(min, `${label}至少 ${min} 个字符`)
+      .max(max, `${label}最多 ${max} 个字符`)
+      .optional()
+  )
 
 export const zTextRequired = (label: string, min = 1, max = 32) =>
   z

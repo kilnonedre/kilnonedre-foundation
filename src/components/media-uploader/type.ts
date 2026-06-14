@@ -1,23 +1,37 @@
-import { CommonObject, UUID } from '@/type'
+import { UUID } from '@/type'
 import { ConfigApiRespT } from '@/type/api'
 
 export interface MediaItem {
-  id: string // local id for react key
-  uploadId?: string // 后端 object id（表单 value 的元素）
-  localUrl?: string // 上传前/上传中预览
-  url?: string // ReadObject 或 CreateObject 返回的 url
+  id: string
+  uploadId?: string
+  localUrl?: string
+  url?: string
   uploading: boolean
 }
 
-export interface ConfigProps {
-  value?: Array<UUID>
-  onChange?: (_ids: string[]) => void
+interface ConfigUploaderProp {
   className?: string
   disabled?: boolean
-  multiple?: boolean
   readonly?: boolean
   maxSizeKb?: number
-  upload: (_formData: FormData) => Promise<ConfigApiRespT<CommonObject>>
-  read: (_id: UUID) => Promise<ConfigApiRespT<CommonObject>>
+  urlTemplate?: string
+
+  upload: (_formData: FormData) => Promise<ConfigApiRespT<{ id: UUID }>>
   onError?: (_message: string) => void
+}
+
+export interface ConfigBaseProp extends ConfigUploaderProp {
+  value?: Array<UUID>
+  onChange?: (_ids: Array<UUID>) => void
+  multiple?: boolean
+}
+
+export interface ConfigMultiProp extends ConfigUploaderProp {
+  value?: Array<UUID>
+  onChange?: (_ids: string[]) => void
+}
+
+export interface ConfigSingleProp extends ConfigUploaderProp {
+  value?: UUID
+  onChange?: (_id: UUID) => void
 }

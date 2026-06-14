@@ -9,10 +9,13 @@ import {
 } from '@/shadcn/components/dialog'
 import { ScrollArea } from '@/shadcn/components/scroll-area'
 import { UUID } from '@/type'
-import { cn, genUuid } from '@/util'
+import { buildUploaderUrl, cn, genUuid } from '@/util'
 import type * as types from './type'
 
-export const MediaUploader = ({ value = [], ...props }: types.ConfigProps) => {
+export const MediaUploader = ({
+  value = [],
+  ...props
+}: types.ConfigBaseProp) => {
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   const [items, setItems] = useState<Array<types.MediaItem>>([])
@@ -23,86 +26,27 @@ export const MediaUploader = ({ value = [], ...props }: types.ConfigProps) => {
   const canEdit = !readonly && !disabled
 
   useEffect(() => {
-    let cancelled = false
+    const next = value.map(id => {
+      const old = items.find(it => it.uploadId === id)
 
-    async function hydrateFromValue(ids: Array<UUID>) {
-      const existed = new Map<string, types.MediaItem>()
+      if (old) return old
 
-      items.forEach(it => {
-        if (it.uploadId) existed.set(it.uploadId, it)
-      })
-
-      const next: Array<types.MediaItem> = []
-
-      for (const id of ids) {
-        const old = existed.get(id)
-
-        if (old?.url) {
-          next.push(old)
-          continue
-        }
-
-        next.push({
-          id: genUuid(),
-          uploadId: id,
-          uploading: true,
-        })
+      return {
+        id: genUuid(),
+        uploadId: id,
+        url: buildUploaderUrl(id, props.urlTemplate),
+        uploading: false,
       }
+    })
 
-      if (!cancelled) setItems(next)
-
-      const results = await Promise.all(
-        ids.map(async objectId => {
-          try {
-            const resp = await props.read(objectId)
-
-            if (resp.code !== '200') {
-              throw new Error(resp.msg || 'read failed')
-            }
-
-            return {
-              objectId,
-              url: resp.data.url as string,
-            }
-          } catch {
-            return {
-              objectId,
-              url: '',
-            }
-          }
-        })
-      )
-
-      if (cancelled) return
-
-      setItems(prev =>
-        prev.map(it => {
-          if (!it.uploadId) return it
-
-          const found = results.find(r => r.objectId === it.uploadId)
-          if (!found) return it
-
-          return {
-            ...it,
-            url: found.url || it.url,
-            uploading: false,
-          }
-        })
-      )
-    }
-
-    hydrateFromValue(value)
-
-    return () => {
-      cancelled = true
-    }
-  }, [value.join('|')])
+    setItems(next)
+  }, [value.join('|'), props.urlTemplate])
 
   const emitIds = useCallback(
     (nextItems: Array<types.MediaItem>) => {
       const ids = nextItems
         .filter(it => !!it.uploadId)
-        .map(it => it.uploadId!) as Array<string>
+        .map(it => it.uploadId!) as Array<UUID>
 
       props.onChange?.(ids)
     },
@@ -138,8 +82,8 @@ export const MediaUploader = ({ value = [], ...props }: types.ConfigProps) => {
       const resp = await props.upload(fd)
       if (resp.code !== '200') return
 
-      const uploadId = resp.data.id as string
-      const url = resp.data.url as string
+      const uploadId = resp.data.id
+      const url = buildUploaderUrl(uploadId, props.urlTemplate)
 
       setItems(prev => {
         const next = prev.map(it =>
@@ -282,5 +226,21 @@ export const MediaUploader = ({ value = [], ...props }: types.ConfigProps) => {
         </DialogContent>
       </Dialog>
     </div>
+  )
+}
+
+export const MediaUploaderSingle = (props: types.ConfigSingleProp) => {
+  const { value, onChange, ...rest } = props
+
+  return (
+    <MediaUploader
+      {...rest}
+      value={value ? [value] : []}
+      onChange={values => {
+        const first = values[0]
+        if (!first) return
+        onChange?.(first)
+      }}
+    />
   )
 }

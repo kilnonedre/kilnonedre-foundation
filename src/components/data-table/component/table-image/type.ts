@@ -1,5 +1,7 @@
-import { CommonObject } from '@/type'
+import { UUID } from '@/type'
 
 export interface ConfigProp {
-  value: Array<CommonObject>
+  ids?: Array<UUID>
+  urls?: Array<string>
+  urlTemplate?: string
 }

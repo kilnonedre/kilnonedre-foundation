@@ -1,6 +1,6 @@
 import { EnumAMapPluginPosition, LngLat } from '@/type'
 
-export interface ConfigProps {
+export interface ConfigProp {
   enableHighAccuracy?: boolean
   timeout?: number
   maximumAge?: number

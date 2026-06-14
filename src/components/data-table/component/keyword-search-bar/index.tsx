@@ -2,7 +2,7 @@ import { Button } from '@/shadcn/components/button'
 import { Input } from '@/shadcn/components/input'
 import type * as types from './type'
 
-export const KeywordSearchBar = (props: types.ConfigProps) => {
+export const KeywordSearchBar = (props: types.ConfigProp) => {
   return (
     <>
       <Input
