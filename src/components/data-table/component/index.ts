@@ -1,5 +1,6 @@
 export * from './keyword-search-bar'
 export * from './table-color'
+export * from './table-delete-form-dialog'
 export * from './table-empty'
 export * from './table-form-dialog'
 export * from './table-header-text'

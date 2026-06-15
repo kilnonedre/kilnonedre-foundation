@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import { CommonLocation } from '@/type'
 
 /**
  * 将空字符串转换为 undefined。
@@ -92,22 +93,22 @@ export const zPhone = (max = 11) =>
     .regex(/^1[3-9]\d{9}$/, '请输入正确的手机号')
     .max(max, `手机号最多 ${max} 位`)
 
-export const zIdRequired = (label = 'ID') =>
+export const zIdRequired = (label: string) =>
   z
     .string({
       message: `请选择${label}`,
     })
     .uuid(`${label}格式不正确`)
 
-export const zIdOptional = (label = 'ID') => zIdRequired(label).optional()
+export const zIdOptional = (label: string) => zIdRequired(label).optional()
 
-export const zIdsRequired = (label = 'ID') =>
+export const zIdsRequired = (label: string) =>
   z.array(zIdRequired(label)).min(1, `至少选择一个${label}`)
 
-export const zIdsOptional = (label = 'ID') =>
+export const zIdsOptional = (label: string) =>
   z.array(zIdRequired(label)).optional()
 
-export const zTexts = (label = '内容') =>
+export const zTexts = (label: string) =>
   z.array(z.string()).min(1, `至少选择一个${label}`)
 
 export const zImageId = (label: string) =>
@@ -265,3 +266,15 @@ export const zDecimal = (label: string, min?: number, max?: number) => {
 
 export const zDecimalOptional = (label: string, min?: number, max?: number) =>
   zDecimal(label, min, max).optional()
+
+export const zLocationRequired = (label: string) =>
+  z
+    .custom<CommonLocation>()
+    .nullable()
+    .refine(value => value !== null, {
+      message: `请输入${label}`,
+    })
+    .transform(value => value as CommonLocation)
+
+export const zLocationOptional = () =>
+  z.custom<CommonLocation>().nullable().optional()

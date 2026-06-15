@@ -1,10 +1,9 @@
 import { ReactNode } from 'react'
 import { FieldValues, Path, UseFormReturn } from 'react-hook-form'
-import { FieldGroup } from '@/components'
+import { Button, FieldGroup } from '@/components'
 import { FormTextarea } from '@/render/form/form-textarea'
-import { Button } from '@/shadcn/components/button'
 import { DialogClose, DialogFooter } from '@/shadcn/components/dialog'
-import { EnumFormMode } from '@/type'
+import { EnumFormMode, EnumSemanticColor, EnumVariant } from '@/type'
 
 export * from './form-checkbox'
 export * from './form-color'
@@ -12,6 +11,7 @@ export * from './form-enum-select'
 export * from './form-input'
 export * from './form-map-select'
 export * from './form-password'
+export * from './form-switch'
 export * from './form-textarea'
 export * from './form-time-picker'
 export * from './type'
@@ -38,7 +38,7 @@ export const renderFooter = (mode: EnumFormMode) => {
       return (
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">关闭</Button>
+            <Button variant={EnumVariant.OUTLINE}>关闭</Button>
           </DialogClose>
         </DialogFooter>
       )
@@ -47,9 +47,9 @@ export const renderFooter = (mode: EnumFormMode) => {
       return (
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">取消</Button>
+            <Button variant={EnumVariant.OUTLINE}>取消</Button>
           </DialogClose>
-          <Button variant="destructive" type="submit">
+          <Button semanticColor={EnumSemanticColor.DANGER} type="submit">
             确认删除
           </Button>
         </DialogFooter>
@@ -59,10 +59,29 @@ export const renderFooter = (mode: EnumFormMode) => {
       return (
         <DialogFooter>
           <DialogClose asChild>
-            <Button variant="outline">取消</Button>
+            <Button variant={EnumVariant.OUTLINE}>取消</Button>
           </DialogClose>
           <Button type="submit">保存</Button>
         </DialogFooter>
+      )
+  }
+}
+
+export const renderLayoutFooter = (
+  mode: EnumFormMode,
+  onSubmit: () => void
+) => {
+  switch (mode) {
+    case EnumFormMode.VIEW:
+    case EnumFormMode.DELETE:
+      return null
+
+    default:
+      return (
+        <div className="flex justify-end gap-2">
+          <Button variant={EnumVariant.OUTLINE}>取消</Button>
+          <Button onClick={onSubmit}>保存</Button>
+        </div>
       )
   }
 }
@@ -71,7 +90,7 @@ export const renderConfirmFooter = () => {
   return (
     <DialogFooter>
       <DialogClose asChild>
-        <Button variant="outline">取消</Button>
+        <Button variant={EnumVariant.OUTLINE}>取消</Button>
       </DialogClose>
       <Button type="submit">确定</Button>
     </DialogFooter>

@@ -4,6 +4,8 @@ import { EnumSemanticColor, EnumVariant } from '@/type/enum'
 import { cn } from '@/util'
 import type * as types from './type'
 
+export * from './preset'
+
 export const Badge = ({
   semanticColor = EnumSemanticColor.PRIMARY,
   variant = EnumVariant.SOLID,

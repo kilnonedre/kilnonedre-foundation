@@ -28,6 +28,7 @@ import {
   ConfigAMapWithDriving,
   ConfigAutoCompleteTip,
   ConfigDrivingInstance,
+  EnumMapProvider,
   EnumSemanticColor,
   EnumVariant,
   LngLat,
@@ -199,6 +200,7 @@ const AMapBase = ({ version = '2.0', ...props }: types.ConfigProp) => {
         adCode: String(addressComponent.adcode || ''),
         poiId: poi?.id,
         poiName: poi?.name,
+        mapProvider: EnumMapProvider.AMAP,
       }
 
       const applyPickedLocation = (data: CommonLocation) => {
