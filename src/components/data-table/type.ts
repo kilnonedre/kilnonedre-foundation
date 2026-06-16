@@ -33,6 +33,7 @@ export type ConfigProp<T, P> = {
   filters?: Record<string, unknown>
   onFiltersChange?: (_filters: Record<string, unknown>) => void
 
+  searchable?: boolean
   searchbar?: (_ctx: SearchbarCtx) => ReactNode
   advancedFilter?: (_ctx: AdvancedFilterCtx) => ReactNode
 

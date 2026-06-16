@@ -20,7 +20,7 @@ import {
   FilterIcon,
   RotateCcwIcon,
 } from 'lucide-react'
-import { TableEmpty } from '@/components/data-table/component'
+import { KeywordSearchBar, TableEmpty } from '@/components/data-table/component'
 import { TablePagination } from '@/components/data-table/component/table-pagination'
 import { Button } from '@/shadcn/components/button'
 import {
@@ -228,16 +228,39 @@ export const DataTable = <T, P>(props: types.ConfigProp<T, P>) => {
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
+  const renderSearchbar = () => {
+    const ctx: types.SearchbarCtx = {
+      filters: draftFilters,
+      setFilters: updater => setDraftFilters(prev => updater(prev)),
+      search: () => syncFilters(draftFilters),
+      reset: resetFilters,
+    }
+
+    if (props.searchbar) {
+      return props.searchbar(ctx)
+    }
+
+    if (!props.searchable) return null
+
+    return (
+      <KeywordSearchBar
+        value={(draftFilters.keyword as string) ?? ''}
+        onSearch={ctx.search}
+        onChange={value =>
+          ctx.setFilters(prev => ({
+            ...prev,
+            keyword: value,
+          }))
+        }
+      />
+    )
+  }
+
   return (
     <div className="flex w-full flex-col gap-6">
       <div className="flex items-center justify-between gap-4 px-4 lg:px-6">
         <div className="flex flex-1 items-center gap-2">
-          {props.searchbar?.({
-            filters: draftFilters,
-            setFilters: updater => setDraftFilters(prev => updater(prev)),
-            search: () => syncFilters(draftFilters),
-            reset: resetFilters,
-          })}
+          {renderSearchbar()}
 
           {props.advancedFilter && (
             <Button
@@ -253,7 +276,7 @@ export const DataTable = <T, P>(props: types.ConfigProp<T, P>) => {
             </Button>
           )}
 
-          {(props.searchbar || props.advancedFilter) && (
+          {(props.searchable || props.searchbar || props.advancedFilter) && (
             <Button variant="ghost" size="sm" onClick={resetFilters}>
               <RotateCcwIcon />
               重置
