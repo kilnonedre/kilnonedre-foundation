@@ -3,7 +3,6 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/shadcn/components/dialog'
 import { ScrollArea } from '@/shadcn/components/scroll-area'
 import { EnumFormMode, EnumFormModeLabel } from '@/type/enum'
@@ -15,8 +14,12 @@ export const TableFormDialog = (props: types.ConfigProp) => {
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogTrigger asChild>{props.children}</DialogTrigger>
-      <DialogContent className="sm:max-w-106.25">
+      <DialogContent
+        className="sm:max-w-106.25"
+        onOpenAutoFocus={event => {
+          event.preventDefault()
+        }}
+      >
         <DialogHeader>
           <DialogTitle>{EnumFormModeLabel[props.mode]}</DialogTitle>
         </DialogHeader>

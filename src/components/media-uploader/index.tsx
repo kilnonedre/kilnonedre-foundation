@@ -12,7 +12,7 @@ import { UUID } from '@/type'
 import { buildUploaderUrl, cn, genUuid } from '@/util'
 import type * as types from './type'
 
-export const MediaUploader = ({
+export const MediaUploaderMulti = ({
   value = [],
   ...props
 }: types.ConfigBaseProp) => {
@@ -233,12 +233,11 @@ export const MediaUploaderSingle = (props: types.ConfigSingleProp) => {
   const { value, onChange, ...rest } = props
 
   return (
-    <MediaUploader
+    <MediaUploaderMulti
       {...rest}
       value={value ? [value] : []}
       onChange={values => {
-        const first = values[0]
-        if (!first) return
+        const first = values[0] ?? null
         onChange?.(first)
       }}
     />

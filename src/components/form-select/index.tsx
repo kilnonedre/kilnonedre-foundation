@@ -13,6 +13,7 @@ export const FormSelect = (props: types.ConfigProp) => {
     <Select
       value={props.value}
       onValueChange={val => {
+        if (!val) return
         props.onValueChange(val)
         if (!props.onLabelChange) return
         const filter = props.optionList.find(option => option.value === val)

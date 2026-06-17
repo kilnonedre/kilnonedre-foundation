@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
@@ -21,7 +21,6 @@ import type * as types from './type'
 
 export const TableDeleteFormDialog = (props: types.ConfigProp) => {
   const mode = EnumFormMode.DELETE
-  const [open, setOpen] = useState(false)
 
   const resolver = useMemo(
     () => zodResolver<FormValuesInput, unknown, FormValues>(schema),
@@ -53,7 +52,7 @@ export const TableDeleteFormDialog = (props: types.ConfigProp) => {
       }
       toast.success(getSuccessMessage(EnumFormMode.DELETE))
       resetByMode()
-      setOpen(false)
+      props.onOpenChange(false)
       props.onEdit()
     } catch (e) {
       console.error(e)
@@ -67,28 +66,17 @@ export const TableDeleteFormDialog = (props: types.ConfigProp) => {
     </FieldGroup>
   )
 
-  const onOpenChange = async (nextOpen: boolean) => {
-    if (nextOpen) {
-      setOpen(true)
-      resetByMode()
-      return
-    }
-    setOpen(nextOpen)
-  }
-
   return (
     <TableFormDialog
       id={props.id}
       mode={mode}
-      open={open}
+      open={props.open}
       onEdit={props.onEdit}
       limitHeight={false}
       renderBody={() => renderBody(mode, formFields, form)}
       renderFooter={() => renderFooter(mode)}
       onSubmit={form.handleSubmit(onSubmit)}
-      onOpenChange={onOpenChange}
-    >
-      {props.children}
-    </TableFormDialog>
+      onOpenChange={props.onOpenChange}
+    />
   )
 }

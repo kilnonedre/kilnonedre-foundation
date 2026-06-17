@@ -8,7 +8,7 @@ export const TableColor = (props: types.ConfigProp) => {
   return (
     <div
       style={{ backgroundColor: color }}
-      className="aspect-square rounded-full"
+      className="aspect-square rounded-full w-8"
     />
   )
 }

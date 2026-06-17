@@ -4,7 +4,6 @@ import { EnumFormMode } from '@/type/enum'
 export interface ConfigProp {
   id?: string
   mode: EnumFormMode
-  children: ReactNode
   open: boolean
   bodyHeight?: string | number
   limitHeight?: boolean

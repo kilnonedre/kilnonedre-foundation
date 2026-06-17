@@ -65,7 +65,7 @@ export const DropdownCascaderMulti = ({
     }))
 
   return (
-    <DropdownMenu open={open} onOpenChange={setOpen}>
+    <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild className="self-start">
         <Button
           variant="outline"
@@ -77,7 +77,7 @@ export const DropdownCascaderMulti = ({
             {selectedItems.map(item => (
               <span
                 key={item.value}
-                className="inline-flex items-center gap-1 rounded border px-2 py-0.5 text-xs"
+                className="inline-flex items-center gap-1 rounded border px-2 py-0.5 text-sm"
               >
                 {item.label}
                 <span

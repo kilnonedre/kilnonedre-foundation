@@ -111,21 +111,25 @@ export const zIdsOptional = (label: string) =>
 export const zTexts = (label: string) =>
   z.array(z.string()).min(1, `至少选择一个${label}`)
 
-export const zImageId = (label: string) =>
-  z.string().uuid(`${label} ID 格式不正确`)
-
+// 必填单图
 export const zImageIdRequired = (label: string) =>
   z
     .string({
-      message: `请至少上传一张${label}`,
+      message: `请上传${label}`,
     })
     .uuid(`${label} ID 格式不正确`)
 
-export const zImageIds = (label: string) =>
+// 选填单图
+export const zImageIdOptional = (label: string) =>
+  z.string().uuid(`${label} ID 格式不正确`).nullable()
+
+// 必填多图
+export const zImageIdsRequired = (label: string) =>
   z
     .array(z.string().uuid(`${label} ID 格式不正确`))
     .min(1, `至少上传1张${label}`)
 
+// 选填多图
 export const zImageIdsOptional = (label: string) =>
   z.array(z.string().uuid(`${label} ID 格式不正确`)).optional()
 
