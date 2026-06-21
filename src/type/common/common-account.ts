@@ -5,4 +5,6 @@ export interface CommonAccount {
   profileId: UUID
   username: string
   handle: string
+  email?: string
+  phone?: string
 }

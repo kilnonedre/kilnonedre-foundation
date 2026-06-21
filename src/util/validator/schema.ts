@@ -75,23 +75,41 @@ export const zIdCardOptional = (label = '身份证号') =>
       .optional()
   )
 
-export const zEmail = (max = 32) =>
+export const zEmailRequired = (max = 32) =>
   z
     .string({
       message: '请输入邮箱',
     })
     .trim()
+    .min(1, '请输入邮箱')
     .email('请输入正确的邮箱')
     .max(max, `邮箱最多 ${max} 个字符`)
 
-export const zPhone = (max = 11) =>
+export const zEmailOptional = (max = 32) =>
+  z
+    .string()
+    .trim()
+    .email('请输入正确的邮箱')
+    .max(max, `邮箱最多 ${max} 个字符`)
+    .optional()
+
+export const zPhoneRequired = (max = 11) =>
   z
     .string({
       message: '请输入手机号',
     })
     .trim()
+    .min(1, '请输入手机号')
     .regex(/^1[3-9]\d{9}$/, '请输入正确的手机号')
     .max(max, `手机号最多 ${max} 位`)
+
+export const zPhoneOptional = (max = 11) =>
+  z
+    .string()
+    .trim()
+    .regex(/^1[3-9]\d{9}$/, '请输入正确的手机号')
+    .max(max, `手机号最多 ${max} 位`)
+    .optional()
 
 export const zIdRequired = (label: string) =>
   z
