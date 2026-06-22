@@ -203,44 +203,6 @@ export const zDateOptional = (label: string) =>
     })
     .optional()
 
-export const zNumber = (label: string, min?: number, max?: number) => {
-  let schema = z.number({
-    message: `请输入${label}`,
-  })
-
-  if (min !== undefined) {
-    schema = schema.min(min, `${label}不能小于 ${min}`)
-  }
-
-  if (max !== undefined) {
-    schema = schema.max(max, `${label}不能大于 ${max}`)
-  }
-
-  return schema
-}
-
-export const zNumberOptional = (label: string, min?: number, max?: number) => {
-  let schema = z
-    .number({
-      message: `请输入${label}`,
-    })
-    .optional()
-
-  if (min !== undefined) {
-    schema = schema.refine(v => v === undefined || v >= min, {
-      message: `${label}不能小于 ${min}`,
-    })
-  }
-
-  if (max !== undefined) {
-    schema = schema.refine(v => v === undefined || v <= max, {
-      message: `${label}不能大于 ${max}`,
-    })
-  }
-
-  return schema
-}
-
 export const zCoerceNumber = (label: string, min?: number, max?: number) => {
   let schema = z.coerce.number({
     message: `请输入${label}`,
@@ -300,3 +262,39 @@ export const zLocationRequired = (label: string) =>
 
 export const zLocationOptional = () =>
   z.custom<CommonLocation>().nullable().optional()
+
+export const zNumberRequired = (label: string, min?: number, max?: number) => {
+  let schema = z
+    .number({
+      error: `${label}不能为空`,
+    })
+    .finite(`${label}必须是有效数字`)
+  if (min !== undefined) {
+    schema = schema.min(min, `${label}不能小于${min}`)
+  }
+  if (max !== undefined) {
+    schema = schema.max(max, `${label}不能大于${max}`)
+  }
+  return z.preprocess(value => {
+    if (value === '' || value === undefined || value === null) {
+      return undefined
+    }
+    return Number(value)
+  }, schema)
+}
+
+export const zNumberOptional = (label: string, min?: number, max?: number) => {
+  let schema = z.number().finite(`${label}必须是有效数字`)
+  if (min !== undefined) {
+    schema = schema.min(min, `${label}不能小于${min}`)
+  }
+  if (max !== undefined) {
+    schema = schema.max(max, `${label}不能大于${max}`)
+  }
+  return z.preprocess(value => {
+    if (value === '' || value === undefined || value === null) {
+      return undefined
+    }
+    return Number(value)
+  }, schema.optional())
+}
