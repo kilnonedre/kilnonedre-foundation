@@ -1,6 +1,8 @@
+import { Title } from '@/components'
+import { Separator } from '@/shadcn/components/separator'
 import type * as types from './type'
 
-export const BaseLayout = (props: types.ConfigProp) => {
+const BaseLayoutRoot = (props: types.ConfigBaseLayoutRootProp) => {
   return (
     <div className="flex flex-col h-full">
       <div className="flex-1 overflow-auto">
@@ -16,3 +18,26 @@ export const BaseLayout = (props: types.ConfigProp) => {
     </div>
   )
 }
+
+const BaseLayoutTitle = (props: types.ConfigBaseLayoutTitleProp) => {
+  return <Title>{props.children}</Title>
+}
+
+const BaseLayoutSection = (props: types.ConfigBaseLayoutSectionProp) => {
+  return (
+    <>
+      {props.title && <Title>{props.title}</Title>}
+      <div className="p-2">{props.children}</div>
+    </>
+  )
+}
+
+const BaseLayoutSeparator = () => {
+  return <Separator className="my-6" />
+}
+
+export const BaseLayout = Object.assign(BaseLayoutRoot, {
+  Title: BaseLayoutTitle,
+  Section: BaseLayoutSection,
+  Separator: BaseLayoutSeparator,
+})
