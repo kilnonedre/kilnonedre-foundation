@@ -24,9 +24,9 @@ export const TableImage = (props: types.ConfigProp) => {
         {imageUrls.map((url, index) => (
           <div
             key={`${url}-${index}`}
-            className="rounded-xl border bg-card text-card-foreground shadow group overflow-hidden w-25 aspect-square"
+            className="group aspect-square w-25 overflow-hidden rounded-xl border bg-card text-card-foreground shadow"
           >
-            <div className="relative bg-muted">
+            <div className="relative h-full w-full bg-muted">
               <img
                 src={url}
                 alt=""
