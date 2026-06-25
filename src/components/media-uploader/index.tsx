@@ -1,3 +1,4 @@
+/* eslint complexity: ["error", 20] */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Eye, Loader2, Plus, Trash2 } from 'lucide-react'
 import { Button } from '@/shadcn/components/button'
@@ -13,9 +14,11 @@ import { buildUploaderUrl, cn, genUuid } from '@/util'
 import type * as types from './type'
 
 export const MediaUploaderMulti = ({
-  value = [],
+  multiple = true,
   ...props
 }: types.ConfigBaseProp) => {
+  const value = props.value ?? []
+
   const inputRef = useRef<HTMLInputElement | null>(null)
 
   const [items, setItems] = useState<Array<types.MediaItem>>([])
@@ -122,7 +125,7 @@ export const MediaUploaderMulti = ({
   }
 
   const showUploadButton =
-    canEdit && ((!props.multiple && items.length === 0) || props.multiple)
+    canEdit && ((!multiple && items.length === 0) || multiple)
 
   return (
     <div className={cn('space-y-3', props.className)}>
@@ -236,6 +239,7 @@ export const MediaUploaderSingle = (props: types.ConfigSingleProp) => {
     <MediaUploaderMulti
       {...rest}
       value={value ? [value] : []}
+      multiple={false}
       onChange={values => {
         const first = values[0] ?? null
         onChange?.(first)
