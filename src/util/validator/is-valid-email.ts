@@ -1,4 +1,5 @@
+import { EMAIL_REGEX } from '@/util/validator/regex'
+
 export const isValidEmail = (string: string) => {
-  const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
-  return regex.test(string)
+  return EMAIL_REGEX.test(string)
 }
