@@ -13,11 +13,19 @@ export * from './type'
 
 export const TableRowAction = <T extends { id: string }>(
   props: types.ConfigProp<T>
+  // eslint-disable-next-line complexity
 ) => {
   const meta = props.table.options.meta as {
     toEdit?: (_id: string) => void
     toDelete?: (_id: string) => void
+    toAudit?: (_id: string) => void
   }
+
+  const edit = props.toEdit ?? meta?.toEdit
+  const remove = props.toDelete ?? meta?.toDelete
+  const audit = props.toAudit ?? meta?.toAudit
+
+  if (!edit && !remove && !audit) return null
 
   return (
     <DropdownMenu>
@@ -33,29 +41,44 @@ export const TableRowAction = <T extends { id: string }>(
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-32">
-        <DropdownMenuItem
-          className="justify-center"
-          onSelect={() => {
-            setTimeout(() => {
-              ;(props.toEdit ?? meta?.toEdit)?.(props.row.original.id)
-            }, 0)
-          }}
-        >
-          编辑
-        </DropdownMenuItem>
+        {edit && (
+          <>
+            <DropdownMenuItem
+              className="justify-center"
+              onSelect={() => {
+                setTimeout(() => edit(props.row.original.id), 0)
+              }}
+            >
+              编辑
+            </DropdownMenuItem>
+            {(remove || audit) && <DropdownMenuSeparator />}
+          </>
+        )}
 
-        <DropdownMenuSeparator />
+        {remove && (
+          <>
+            <DropdownMenuItem
+              className="justify-center"
+              onSelect={() => {
+                setTimeout(() => remove(props.row.original.id), 0)
+              }}
+            >
+              删除
+            </DropdownMenuItem>
+            {audit && <DropdownMenuSeparator />}
+          </>
+        )}
 
-        <DropdownMenuItem
-          className="justify-center"
-          onSelect={() => {
-            setTimeout(() => {
-              ;(props.toDelete ?? meta?.toDelete)?.(props.row.original.id)
-            }, 0)
-          }}
-        >
-          删除
-        </DropdownMenuItem>
+        {audit && (
+          <DropdownMenuItem
+            className="justify-center"
+            onSelect={() => {
+              setTimeout(() => audit(props.row.original.id), 0)
+            }}
+          >
+            变更记录
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

@@ -1,6 +1,7 @@
 export * from './amap-plugin-position'
 export * from './approval-status'
 export * from './approval-view'
+export * from './audit-status'
 export * from './entity-status'
 export * from './form-mode'
 export * from './gender-type'

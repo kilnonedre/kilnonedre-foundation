@@ -1,4 +1,5 @@
 export * from '../theme'
+export * from './audit-timeline'
 export * from './badge'
 export * from './button'
 export * from './card'
