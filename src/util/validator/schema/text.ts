@@ -14,4 +14,4 @@ export const zTextRequired = (label: string, min = 1, max = 32) =>
   buildSchema(label, min, max)
 
 export const zTextOptional = (label: string, min = 1, max = 32) =>
-  z.preprocess(emptyToUndefined, buildSchema(label, min, max).optional())
+  z.preprocess(emptyToUndefined, buildSchema(label, min, max).nullish())

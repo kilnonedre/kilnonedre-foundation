@@ -1,5 +1,7 @@
 export * from './common-account'
+export * from './common-audit-resp'
 export * from './common-location'
+export * from './common-merchant'
 export * from './common-option'
 export * from './common-page'
 export * from './common-resp'
