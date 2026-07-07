@@ -8,4 +8,4 @@ export const zLocationRequired = (label: string) =>
     message: `请输入${label}`,
   })
 
-export const zLocationOptional = () => buildSchema().optional()
+export const zLocationOptional = () => buildSchema().nullish()

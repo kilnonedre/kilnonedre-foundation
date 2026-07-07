@@ -13,4 +13,4 @@ const buildSchema = () =>
 export const zPhoneRequired = () => buildSchema()
 
 export const zPhoneOptional = () =>
-  z.preprocess(emptyToUndefined, buildSchema().optional())
+  z.preprocess(emptyToUndefined, buildSchema().nullish())

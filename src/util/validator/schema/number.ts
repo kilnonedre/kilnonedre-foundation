@@ -23,4 +23,4 @@ export const zNumberRequired = (label: string, min?: number, max?: number) =>
   z.preprocess(toNumber, buildSchema(label, min, max))
 
 export const zNumberOptional = (label: string, min?: number, max?: number) =>
-  z.preprocess(toNumber, buildSchema(label, min, max).optional())
+  z.preprocess(toNumber, buildSchema(label, min, max).nullish())

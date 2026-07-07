@@ -11,21 +11,29 @@ import type * as types from './type'
 
 export * from './type'
 
+/* eslint complexity: ["error", 20] */
 export const TableRowAction = <T extends { id: string }>(
   props: types.ConfigProp<T>
-  // eslint-disable-next-line complexity
 ) => {
   const meta = props.table.options.meta as {
     toEdit?: (_id: string) => void
     toDelete?: (_id: string) => void
     toAudit?: (_id: string) => void
+    canDelete?: (_row: T, _index: number) => boolean
   }
 
   const edit = props.toEdit ?? meta?.toEdit
   const remove = props.toDelete ?? meta?.toDelete
   const audit = props.toAudit ?? meta?.toAudit
 
-  if (!edit && !remove && !audit) return null
+  const canDelete =
+    meta?.canDelete?.(props.row.original, props.row.index) ?? true
+
+  const showEdit = !!edit
+  const showDelete = !!remove && canDelete
+  const showAudit = !!audit
+
+  if (!showEdit && !showDelete && !showAudit) return null
 
   return (
     <DropdownMenu>
@@ -41,7 +49,7 @@ export const TableRowAction = <T extends { id: string }>(
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-32">
-        {edit && (
+        {showEdit && (
           <>
             <DropdownMenuItem
               className="justify-center"
@@ -51,11 +59,11 @@ export const TableRowAction = <T extends { id: string }>(
             >
               编辑
             </DropdownMenuItem>
-            {(remove || audit) && <DropdownMenuSeparator />}
+            {(showDelete || showAudit) && <DropdownMenuSeparator />}
           </>
         )}
 
-        {remove && (
+        {showDelete && (
           <>
             <DropdownMenuItem
               className="justify-center"
@@ -65,11 +73,11 @@ export const TableRowAction = <T extends { id: string }>(
             >
               删除
             </DropdownMenuItem>
-            {audit && <DropdownMenuSeparator />}
+            {showAudit && <DropdownMenuSeparator />}
           </>
         )}
 
-        {audit && (
+        {showAudit && (
           <DropdownMenuItem
             className="justify-center"
             onSelect={() => {

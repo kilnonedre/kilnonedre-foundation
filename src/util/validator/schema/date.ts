@@ -12,4 +12,4 @@ export const zDateRequired = (label: string) =>
     message: `请选择${label}`,
   })
 
-export const zDateOptional = (label: string) => buildSchema(label).optional()
+export const zDateOptional = (label: string) => buildSchema(label).nullish()

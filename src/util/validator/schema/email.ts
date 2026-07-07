@@ -13,4 +13,4 @@ const buildSchema = (max: number) =>
 export const zEmailRequired = (max = 32) => buildSchema(max)
 
 export const zEmailOptional = (max = 32) =>
-  z.preprocess(emptyToUndefined, buildSchema(max).optional())
+  z.preprocess(emptyToUndefined, buildSchema(max).nullish())

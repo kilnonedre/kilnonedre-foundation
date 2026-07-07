@@ -13,4 +13,4 @@ const buildSchema = () =>
 export const zIdCardRequired = () => buildSchema()
 
 export const zIdCardOptional = () =>
-  z.preprocess(emptyToUndefined, buildSchema().optional())
+  z.preprocess(emptyToUndefined, buildSchema().nullish())

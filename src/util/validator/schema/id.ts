@@ -13,10 +13,10 @@ const buildSchema = (label: string) =>
 export const zIdRequired = (label: string) => buildSchema(label)
 
 export const zIdOptional = (label: string) =>
-  z.preprocess(emptyToUndefined, buildSchema(label).optional())
+  z.preprocess(emptyToUndefined, buildSchema(label).nullish())
 
 export const zIdsRequired = (label: string) =>
   z.array(buildSchema(label)).min(1, `至少选择一个${label}`)
 
 export const zIdsOptional = (label: string) =>
-  z.array(buildSchema(label)).optional()
+  z.array(buildSchema(label)).nullish()

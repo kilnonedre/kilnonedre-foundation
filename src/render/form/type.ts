@@ -6,7 +6,8 @@ export interface ConfigRenderBase<T extends FieldValues> {
   form: UseFormReturn<T>
   id: string
   name: FieldPath<T>
-  label: string
+  label?: string
+  showLabel?: boolean
   required?: boolean
   tip?: string
 }
@@ -15,5 +16,6 @@ export interface ConfigRenderPresetBase<T extends FieldValues> {
   mode?: EnumFormMode
   form: UseFormReturn<T>
   required?: boolean
+  showLabel?: boolean
   tip?: string
 }

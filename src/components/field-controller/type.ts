@@ -14,7 +14,8 @@ export interface ConfigProp<
 > {
   id: string
   name: TName
-  label: string
+  label?: string
+  showLabel?: boolean
   required?: boolean
   tip?: string
   control: Control<T>

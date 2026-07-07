@@ -113,7 +113,7 @@ export const DropdownCascaderMulti = ({
 
       <DropdownMenuContent
         align="start"
-        className="w-(--radix-dropdown-menu-trigger-width) min-w-56"
+        className="w-(--radix-dropdown-menu-trigger-width)"
       >
         {renderCascaderNodes(props.options, [], value, selectNode)}
       </DropdownMenuContent>

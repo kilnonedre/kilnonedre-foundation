@@ -29,4 +29,4 @@ export const zDecimalRequired = (label: string, min?: number, max?: number) =>
   buildSchema(label, min, max)
 
 export const zDecimalOptional = (label: string, min?: number, max?: number) =>
-  z.preprocess(emptyToUndefined, buildSchema(label, min, max).optional())
+  z.preprocess(emptyToUndefined, buildSchema(label, min, max).nullish())

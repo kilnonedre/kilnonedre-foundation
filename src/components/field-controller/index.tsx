@@ -15,6 +15,7 @@ export const FieldController = <
   TName extends FieldPath<T> = FieldPath<T>,
 >({
   required = false,
+  showLabel = true,
   ...props
 }: types.ConfigProp<T, TName>) => {
   return (
@@ -23,33 +24,37 @@ export const FieldController = <
       control={props.control}
       render={({ field, fieldState }) => (
         <Field data-invalid={fieldState.invalid}>
-          <div className="flex items-center gap-spacing-xs">
-            <FieldLabel htmlFor={props.id} required={required}>
-              {props.label}
-            </FieldLabel>
+          {showLabel && (
+            <div className="flex items-center gap-spacing-xs">
+              <FieldLabel htmlFor={props.id} required={required}>
+                {props.label}
+              </FieldLabel>
 
-            {props.tip && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <CircleQuestionMark
-                    size="1rem"
-                    className="text-muted-foreground"
-                  />
-                </TooltipTrigger>
-                <TooltipContent
-                  side="right"
-                  className="max-w-[20em] wrap-break-word"
-                >
-                  {props.tip}
-                </TooltipContent>
-              </Tooltip>
-            )}
-          </div>
+              {props.tip && (
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <CircleQuestionMark
+                      size="1rem"
+                      className="text-muted-foreground"
+                    />
+                  </TooltipTrigger>
+                  <TooltipContent
+                    side="right"
+                    className="max-w-[20em] wrap-break-word"
+                  >
+                    {props.tip}
+                  </TooltipContent>
+                </Tooltip>
+              )}
+            </div>
+          )}
+
           {props.children({
             field,
             fieldState,
             id: props.id,
           })}
+
           {fieldState.error && <FieldError errors={[fieldState.error]} />}
         </Field>
       )}

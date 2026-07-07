@@ -11,10 +11,10 @@ const buildSchema = (label: string) =>
 
 export const zImageIdRequired = (label: string) => buildSchema(label)
 
-export const zImageIdOptional = (label: string) => buildSchema(label).nullable()
+export const zImageIdOptional = (label: string) => buildSchema(label).nullish()
 
 export const zImageIdsRequired = (label: string) =>
   z.array(buildSchema(label)).min(1, `至少上传1张${label}`)
 
 export const zImageIdsOptional = (label: string) =>
-  z.array(buildSchema(label)).optional()
+  z.array(buildSchema(label)).nullish()
