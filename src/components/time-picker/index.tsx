@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { zhCN } from 'date-fns/locale'
 import { ChevronDownIcon } from 'lucide-react'
-import { Button } from '@/shadcn/components/button'
+import { Button } from '@/components/button'
 import { Calendar } from '@/shadcn/components/calendar'
 import { Field, FieldGroup } from '@/shadcn/components/field'
 import { Input } from '@/shadcn/components/input'
@@ -10,6 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/shadcn/components/popover'
+import { EnumVariant } from '@/type'
 import { formatDateTime } from '@/util'
 import type * as types from './type'
 
@@ -48,7 +49,7 @@ export const TimePicker = (props: types.ConfigProp) => {
         <Popover open={open} onOpenChange={setOpen}>
           <PopoverTrigger asChild>
             <Button
-              variant="outline"
+              variant={EnumVariant.OUTLINE}
               id={`${props.id}-date`}
               type="button"
               disabled={props.disabled}

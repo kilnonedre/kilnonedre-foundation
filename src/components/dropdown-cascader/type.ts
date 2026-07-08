@@ -25,11 +25,11 @@ export interface ConfigDropdownCascaderSingleProp {
   value?: string
   placeholder?: string
   onValueChange?: (
-    _value: string,
+    _value: string | null,
     _selected: {
       option: ConfigCascaderOption
       path: Array<ConfigCascaderOption>
-    }
+    } | null
   ) => void
 }
 

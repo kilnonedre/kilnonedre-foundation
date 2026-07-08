@@ -1,10 +1,7 @@
 /* eslint complexity: ["error", 20] */
-'use client'
-
 import { useEffect, useMemo, useState } from 'react'
 import {
   ColumnFiltersState,
-  flexRender,
   getCoreRowModel,
   getFacetedRowModel,
   getFacetedUniqueValues,
@@ -14,21 +11,16 @@ import {
   useReactTable,
   VisibilityState,
 } from '@tanstack/react-table'
+import { FilterIcon, RotateCcwIcon } from 'lucide-react'
+import { Button } from '@/components/button'
 import {
-  ChevronDownIcon,
-  ColumnsIcon,
-  FilterIcon,
-  RotateCcwIcon,
-} from 'lucide-react'
-import { KeywordSearchBar, TableEmpty } from '@/components/data-table/component'
-import { TablePagination } from '@/components/data-table/component/table-pagination'
-import { Button } from '@/shadcn/components/button'
+  TableColumnVisibility,
+  TableContent,
+} from '@/components/table/component'
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from '@/shadcn/components/dropdown-menu'
+  KeywordSearchBar,
+  TablePagination,
+} from '@/components/table/preset/data-table/component'
 import {
   Sheet,
   SheetContent,
@@ -36,14 +28,7 @@ import {
   SheetHeader,
   SheetTitle,
 } from '@/shadcn/components/sheet'
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/shadcn/components/table'
+import { EnumSemanticColor, EnumVariant } from '@/type'
 import { isEmpty } from '@/util'
 import type * as types from './type'
 
@@ -264,8 +249,8 @@ export const DataTable = <T, P>(props: types.ConfigProp<T, P>) => {
 
           {props.advancedFilter && (
             <Button
-              variant="outline"
               size="sm"
+              variant={EnumVariant.OUTLINE}
               onClick={() => {
                 setDraftFilters(filtersState)
                 setAdvancedOpen(true)
@@ -277,7 +262,11 @@ export const DataTable = <T, P>(props: types.ConfigProp<T, P>) => {
           )}
 
           {(props.searchable || props.searchbar || props.advancedFilter) && (
-            <Button variant="ghost" size="sm" onClick={resetFilters}>
+            <Button
+              variant={EnumVariant.GHOST}
+              size="sm"
+              onClick={resetFilters}
+            >
               <RotateCcwIcon />
               重置
             </Button>
@@ -285,84 +274,14 @@ export const DataTable = <T, P>(props: types.ConfigProp<T, P>) => {
         </div>
 
         <div className="flex items-center gap-2">
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="outline" size="sm">
-                <ColumnsIcon />
-                <ChevronDownIcon />
-              </Button>
-            </DropdownMenuTrigger>
-
-            <DropdownMenuContent align="end" className="w-56">
-              {table
-                .getAllColumns()
-                .filter(
-                  column =>
-                    typeof column.accessorFn !== 'undefined' &&
-                    column.getCanHide()
-                )
-                .map(column => (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    checked={column.getIsVisible()}
-                    onCheckedChange={value => column.toggleVisibility(!!value)}
-                  >
-                    {String(column.columnDef.meta?.label ?? '')}
-                  </DropdownMenuCheckboxItem>
-                ))}
-            </DropdownMenuContent>
-          </DropdownMenu>
-
+          <TableColumnVisibility table={table} />
           {props.toolbar?.({ refresh })}
         </div>
       </div>
 
       <div className="flex flex-col gap-4 overflow-auto px-4 pb-0.5 lg:px-6">
         <div className="overflow-hidden rounded-lg border">
-          <Table>
-            <TableHeader className="sticky top-0 z-10 bg-muted">
-              {table.getHeaderGroups().map(headerGroup => (
-                <TableRow key={headerGroup.id}>
-                  {headerGroup.headers.map(header => (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  ))}
-                </TableRow>
-              ))}
-            </TableHeader>
-
-            <TableBody>
-              {table.getRowModel().rows.length > 0 ? (
-                table.getRowModel().rows.map(row => (
-                  <TableRow key={row.id}>
-                    {row.getVisibleCells().map(cell => (
-                      <TableCell key={cell.id}>
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))
-              ) : (
-                <TableRow>
-                  <TableCell
-                    colSpan={props.columns.length}
-                    className="h-24 text-center"
-                  >
-                    <TableEmpty />
-                  </TableCell>
-                </TableRow>
-              )}
-            </TableBody>
-          </Table>
+          <TableContent table={table} columns={props.columns} />
         </div>
 
         <div className="flex items-center justify-end px-4">
@@ -398,12 +317,16 @@ export const DataTable = <T, P>(props: types.ConfigProp<T, P>) => {
             <SheetFooter className="border-t px-6 py-4">
               <Button
                 className="flex-1"
-                variant="outline"
+                variant={EnumVariant.OUTLINE}
                 onClick={resetFilters}
               >
                 重置
               </Button>
-              <Button className="flex-1" onClick={confirmAdvanced}>
+              <Button
+                semanticColor={EnumSemanticColor.DARK}
+                className="flex-1"
+                onClick={confirmAdvanced}
+              >
                 确认筛选
               </Button>
             </SheetFooter>

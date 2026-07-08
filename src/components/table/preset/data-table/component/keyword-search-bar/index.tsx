@@ -1,5 +1,6 @@
-import { Button } from '@/shadcn/components/button'
+import { Button } from '@/components/button'
 import { Input } from '@/shadcn/components/input'
+import { EnumSemanticColor } from '@/type'
 import type * as types from './type'
 
 export const KeywordSearchBar = (props: types.ConfigProp) => {
@@ -17,7 +18,11 @@ export const KeywordSearchBar = (props: types.ConfigProp) => {
         }}
       />
 
-      <Button size="sm" onClick={props.onSearch}>
+      <Button
+        semanticColor={EnumSemanticColor.DARK}
+        size="sm"
+        onClick={props.onSearch}
+      >
         查询
       </Button>
     </>

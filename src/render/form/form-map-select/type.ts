@@ -11,4 +11,5 @@ export interface ConfigMapDialogBodyProp {
   center?: LngLat
   value?: CommonLocation | null
   onConfirm?: (location: CommonLocation | null) => void
+  onCancel?: () => void
 }

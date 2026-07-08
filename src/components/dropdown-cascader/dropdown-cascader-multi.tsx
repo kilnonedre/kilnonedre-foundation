@@ -1,17 +1,16 @@
-'use client'
-
 import * as React from 'react'
 import { ChevronDown, X } from 'lucide-react'
+import { Button } from '@/components/button'
 import {
   ConfigCascaderOption,
   ConfigDropdownCascaderMultiWithOptionsProp,
 } from '@/components/dropdown-cascader/type'
-import { Button } from '@/shadcn/components/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/shadcn/components/dropdown-menu'
+import { EnumVariant } from '@/type'
 import { getOptionMap, renderCascaderNodes } from './dropdown-cascader-base'
 
 const toggle = (list: Array<string>, value: string) => {
@@ -68,7 +67,7 @@ export const DropdownCascaderMulti = ({
     <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild className="self-start">
         <Button
-          variant="outline"
+          variant={EnumVariant.OUTLINE}
           className="h-auto! min-h-9 w-full justify-between px-3"
         >
           <div className="flex flex-wrap gap-1">

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import type { CellContext, ColumnDef } from '@tanstack/react-table'
 import { CircleQuestionMark } from 'lucide-react'
-import { TableHeaderText, TableText } from '@/components'
+import { TableHeaderText, TableText } from '@/components/table/preset'
 import {
   Tooltip,
   TooltipContent,

@@ -61,7 +61,9 @@ export const renderFooter = (mode: EnumFormMode) => {
           <DialogClose asChild>
             <Button variant={EnumVariant.OUTLINE}>取消</Button>
           </DialogClose>
-          <Button type="submit">保存</Button>
+          <Button semanticColor={EnumSemanticColor.DARK} type="submit">
+            保存
+          </Button>
         </DialogFooter>
       )
   }
@@ -80,7 +82,9 @@ export const renderLayoutFooter = (
       return (
         <div className="flex justify-end gap-2">
           <Button variant={EnumVariant.OUTLINE}>取消</Button>
-          <Button onClick={onSubmit}>保存</Button>
+          <Button semanticColor={EnumSemanticColor.DARK} onClick={onSubmit}>
+            保存
+          </Button>
         </div>
       )
   }

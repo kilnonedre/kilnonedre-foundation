@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Eye } from 'lucide-react'
-import { Button } from '@/shadcn/components/button'
+import { Button } from '@/components/button'
 import {
   Dialog,
   DialogContent,
@@ -36,8 +36,6 @@ export const TableImage = (props: types.ConfigProp) => {
 
               <div className="absolute inset-0 flex items-start justify-end p-2 opacity-0 transition group-hover:opacity-100">
                 <Button
-                  size="icon"
-                  variant="secondary"
                   className="h-8 w-8"
                   type="button"
                   onClick={() => setPreview(url)}

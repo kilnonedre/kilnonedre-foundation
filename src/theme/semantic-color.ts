@@ -16,6 +16,7 @@ type ColorClassToken = {
   bg10: string
   text11: string
   border7: string
+  border9: string
   ring8: string
 }
 
@@ -35,7 +36,7 @@ const createColor = (
   [EnumVariant.SOLID]: {
     bg: color.bg9,
     text: solidText,
-    border: color.bg9,
+    border: color.border9,
     hoverBg: color.bg10,
     hoverText: '',
     focusRing: color.ring8,
@@ -49,6 +50,15 @@ const createColor = (
     hoverText: '',
     focusRing: color.ring8,
   },
+
+  [EnumVariant.GHOST]: {
+    bg: 'bg-transparent',
+    text: color.text11,
+    border: 'border-transparent',
+    hoverBg: color.bg3,
+    hoverText: '',
+    focusRing: color.ring8,
+  },
 })
 
 const blue: ColorClassToken = {
@@ -58,6 +68,7 @@ const blue: ColorClassToken = {
   bg10: 'hover:bg-[var(--blue-10)]',
   text11: 'text-[var(--blue-11)]',
   border7: 'border-[var(--blue-7)]',
+  border9: 'border-[var(--blue-9)]',
   ring8: 'focus-visible:ring-[var(--blue-8)]',
 }
 
@@ -68,6 +79,7 @@ const green: ColorClassToken = {
   bg10: 'hover:bg-[var(--green-10)]',
   text11: 'text-[var(--green-11)]',
   border7: 'border-[var(--green-7)]',
+  border9: 'border-[var(--green-9)]',
   ring8: 'focus-visible:ring-[var(--green-8)]',
 }
 
@@ -78,6 +90,7 @@ const amber: ColorClassToken = {
   bg10: 'hover:bg-[var(--amber-10)]',
   text11: 'text-[var(--amber-11)]',
   border7: 'border-[var(--amber-7)]',
+  border9: 'border-[var(--amber-9)]',
   ring8: 'focus-visible:ring-[var(--amber-8)]',
 }
 
@@ -88,6 +101,7 @@ const red: ColorClassToken = {
   bg10: 'hover:bg-[var(--red-10)]',
   text11: 'text-[var(--red-11)]',
   border7: 'border-[var(--red-7)]',
+  border9: 'border-[var(--red-9)]',
   ring8: 'focus-visible:ring-[var(--red-8)]',
 }
 
@@ -98,6 +112,7 @@ const cyan: ColorClassToken = {
   bg10: 'hover:bg-[var(--cyan-10)]',
   text11: 'text-[var(--cyan-11)]',
   border7: 'border-[var(--cyan-7)]',
+  border9: 'border-[var(--cyan-9)]',
   ring8: 'focus-visible:ring-[var(--cyan-8)]',
 }
 
@@ -108,6 +123,7 @@ const slate: ColorClassToken = {
   bg10: 'hover:bg-[var(--slate-10)]',
   text11: 'text-[var(--slate-11)]',
   border7: 'border-[var(--slate-7)]',
+  border9: 'border-[var(--slate-9)]',
   ring8: 'focus-visible:ring-[var(--slate-8)]',
 }
 
@@ -145,6 +161,48 @@ const semanticColorMap: Record<
       hoverBg: 'hover:bg-[var(--slate-3)]',
       hoverText: '',
       focusRing: 'focus-visible:ring-[var(--slate-8)]',
+    },
+    [EnumVariant.GHOST]: {
+      bg: 'bg-transparent',
+      text: 'text-[var(--slate-12)]',
+      border: 'border-transparent',
+      hoverBg: 'hover:bg-[var(--slate-3)]',
+      hoverText: '',
+      focusRing: 'focus-visible:ring-[var(--slate-8)]',
+    },
+  },
+  [EnumSemanticColor.DEFAULT]: {
+    [EnumVariant.SOFT]: {
+      bg: 'bg-muted',
+      text: 'text-foreground',
+      border: 'border-border',
+      hoverBg: 'hover:bg-muted/80',
+      hoverText: '',
+      focusRing: 'focus-visible:ring-ring',
+    },
+    [EnumVariant.SOLID]: {
+      bg: 'bg-background',
+      text: 'text-foreground',
+      border: 'border-border',
+      hoverBg: 'hover:bg-accent',
+      hoverText: 'hover:text-accent-foreground',
+      focusRing: 'focus-visible:ring-ring',
+    },
+    [EnumVariant.OUTLINE]: {
+      bg: 'bg-background',
+      text: 'text-foreground',
+      border: 'border-input',
+      hoverBg: 'hover:bg-accent',
+      hoverText: 'hover:text-accent-foreground',
+      focusRing: 'focus-visible:ring-ring',
+    },
+    [EnumVariant.GHOST]: {
+      bg: 'bg-transparent',
+      text: 'text-foreground',
+      border: 'border-transparent',
+      hoverBg: 'hover:bg-accent',
+      hoverText: 'hover:text-accent-foreground',
+      focusRing: 'focus-visible:ring-ring',
     },
   },
 }

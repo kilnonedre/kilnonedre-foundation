@@ -1,7 +1,6 @@
 import { ColumnDef } from '@tanstack/react-table'
-import { TableRowAction, TableText } from '@/components'
+import { TableRowAction, TableText } from '@/components/table/preset'
 import { buildColumn } from '@/render/column/build-column'
-// import { Checkbox } from '@/shadcn/components/checkbox'
 import { CommonResp } from '@/type'
 import { formatDateTime } from '@/util'
 

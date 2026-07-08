@@ -1,7 +1,7 @@
 /* eslint complexity: ["error", 20] */
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Eye, Loader2, Plus, Trash2 } from 'lucide-react'
-import { Button } from '@/shadcn/components/button'
+import { Button } from '@/components/button'
 import {
   Dialog,
   DialogContent,
@@ -9,7 +9,7 @@ import {
   DialogTitle,
 } from '@/shadcn/components/dialog'
 import { ScrollArea } from '@/shadcn/components/scroll-area'
-import { UUID } from '@/type'
+import { EnumSemanticColor, UUID } from '@/type'
 import { buildUploaderUrl, cn, genUuid } from '@/util'
 import type * as types from './type'
 
@@ -172,8 +172,6 @@ export const MediaUploaderMulti = ({
                 {!it.uploading && (it.url || it.localUrl) && (
                   <div className="absolute inset-0 flex items-start justify-end gap-2 p-2 opacity-0 transition group-hover:opacity-100">
                     <Button
-                      size="icon"
-                      variant="secondary"
                       className="h-8 w-8"
                       onClick={() => setPreview(it)}
                       type="button"
@@ -183,8 +181,7 @@ export const MediaUploaderMulti = ({
 
                     {canEdit && (
                       <Button
-                        size="icon"
-                        variant="destructive"
+                        semanticColor={EnumSemanticColor.DANGER}
                         className="h-8 w-8"
                         onClick={() => remove(it.id)}
                         type="button"

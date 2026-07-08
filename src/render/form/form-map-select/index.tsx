@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { FieldValues } from 'react-hook-form'
-import { FieldController } from '@/components'
+import { Button, FieldController } from '@/components'
 import { AMap, Marker } from '@/map/amap'
-import { Button } from '@/shadcn/components/button'
 import {
   Dialog,
   DialogContent,
@@ -10,7 +9,12 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/shadcn/components/dialog'
-import { CommonLocation, EnumMarkerType } from '@/type'
+import {
+  CommonLocation,
+  EnumMarkerType,
+  EnumSemanticColor,
+  EnumVariant,
+} from '@/type'
 import type * as types from './type'
 
 export const FormMapSelect = <T extends FieldValues>(
@@ -36,7 +40,7 @@ export const FormMapSelect = <T extends FieldValues>(
             <Button
               id={id}
               type="button"
-              variant="outline"
+              variant={EnumVariant.OUTLINE}
               aria-invalid={fieldState.invalid}
               className="justify-start"
               onClick={() => setOpen(true)}
@@ -57,11 +61,10 @@ export const FormMapSelect = <T extends FieldValues>(
                   securityCode={props.securityCode}
                   onConfirm={location => {
                     field.onChange(location)
-
                     props.onConfirm?.(location)
-
                     setOpen(false)
                   }}
+                  onCancel={() => setOpen(false)}
                 />
               </DialogContent>
             </Dialog>
@@ -97,11 +100,19 @@ const MapDialogBody = (props: types.ConfigMapDialogBodyProp) => {
       </div>
 
       <DialogFooter>
-        <Button type="button" variant="outline">
+        <Button
+          type="button"
+          variant={EnumVariant.OUTLINE}
+          onClick={props.onCancel}
+        >
           取消
         </Button>
 
-        <Button type="button" onClick={() => props.onConfirm?.(selected!)}>
+        <Button
+          semanticColor={EnumSemanticColor.DARK}
+          type="button"
+          onClick={() => props.onConfirm?.(selected!)}
+        >
           确认
         </Button>
       </DialogFooter>

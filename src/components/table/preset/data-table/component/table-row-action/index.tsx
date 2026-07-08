@@ -1,5 +1,5 @@
 import { MoreVerticalIcon } from 'lucide-react'
-import { Button } from '@/shadcn/components/button'
+import { Button } from '@/components/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,6 +7,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/shadcn/components/dropdown-menu'
+import { EnumVariant } from '@/type'
 import type * as types from './type'
 
 export * from './type'
@@ -39,12 +40,10 @@ export const TableRowAction = <T extends { id: string }>(
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button
-          variant="ghost"
+          variant={EnumVariant.GHOST}
           className="flex size-8 text-muted-foreground data-[state=open]:bg-muted"
-          size="icon"
         >
           <MoreVerticalIcon />
-          <span className="sr-only">Open menu</span>
         </Button>
       </DropdownMenuTrigger>
 

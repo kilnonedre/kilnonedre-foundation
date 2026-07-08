@@ -2,8 +2,8 @@ import { useMemo } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { toast } from 'sonner'
-import { TableFormDialog } from '@/components/data-table/component/table-form-dialog'
 import { FieldGroup } from '@/components/field-group'
+import { TableFormDialog } from '@/components/table/preset/data-table/component/table-form-dialog'
 import {
   FormTextareaUpdatedReason,
   getSuccessMessage,

@@ -2,6 +2,7 @@ import { ReactNode } from 'react'
 import { EnumSemanticColor, EnumVariant } from '@/type/enum'
 
 export interface ConfigProp {
+  id?: string
   semanticColor?: EnumSemanticColor
   variant?: EnumVariant
   children?: ReactNode

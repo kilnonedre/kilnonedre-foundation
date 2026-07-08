@@ -1,17 +1,16 @@
-'use client'
-
 import * as React from 'react'
-import { ChevronDown } from 'lucide-react'
+import { ChevronDown, X } from 'lucide-react'
+import { Button } from '@/components/button'
 import {
   ConfigCascaderOption,
   ConfigDropdownCascaderSingleWithOptionsProp,
 } from '@/components/dropdown-cascader/type'
-import { Button } from '@/shadcn/components/button'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/shadcn/components/dropdown-menu'
+import { EnumVariant } from '@/type'
 import { getOptionMap, renderCascaderNodes } from './dropdown-cascader-base'
 
 export const DropdownCascaderSingle = (
@@ -42,11 +41,40 @@ export const DropdownCascaderSingle = (
     <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild className="self-start">
         <Button
-          variant="outline"
+          variant={EnumVariant.OUTLINE}
           className="h-auto! min-h-9 w-full justify-between px-3 leading-none"
         >
-          {selectedPath || props.placeholder}
-          <ChevronDown className="size-4 ml-auto opacity-50" />
+          <span className="truncate">{selectedPath || props.placeholder}</span>
+
+          <div className="ml-auto flex items-center">
+            {props.value && (
+              <span
+                role="button"
+                tabIndex={0}
+                className="mr-1 inline-flex cursor-pointer items-center justify-center text-muted-foreground hover:text-foreground"
+                onPointerDown={e => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                }}
+                onClick={e => {
+                  e.preventDefault()
+                  e.stopPropagation()
+                  props.onValueChange?.(null, null)
+                }}
+                onKeyDown={e => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault()
+                    e.stopPropagation()
+                    props.onValueChange?.(null, null)
+                  }
+                }}
+              >
+                <X className="size-3.5" />
+              </span>
+            )}
+
+            <ChevronDown className="size-4 opacity-50" />
+          </div>
         </Button>
       </DropdownMenuTrigger>
 

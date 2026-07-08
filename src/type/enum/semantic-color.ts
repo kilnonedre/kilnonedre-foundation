@@ -9,6 +9,7 @@ export const EnumSemanticColor = {
   INFO: 'INFO',
   NEUTRAL: 'NEUTRAL',
   DARK: 'DARK',
+  DEFAULT: 'DEFAULT',
 } as const
 
 export type EnumSemanticColor =
@@ -22,6 +23,7 @@ export const EnumSemanticColorLabel: Record<EnumSemanticColor, string> = {
   INFO: '信息（蓝）',
   NEUTRAL: '中性（灰）',
   DARK: '深色（黑）',
+  DEFAULT: '默认（白）',
 }
 
 export const enumSemanticColorOptions = enumToOptions(
