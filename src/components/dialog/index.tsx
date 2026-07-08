@@ -7,34 +7,30 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/shadcn/components/dialog'
 import { EnumVariant } from '@/type/enum'
 import type * as types from './type'
 
 export const Dialog = (props: types.ConfigProp) => {
-  const [open, setOpen] = useState(false)
   const [confirmLoading, setConfirmLoading] = useState(false)
 
   const handleConfirm = async () => {
     if (!props.onConfirm) {
-      setOpen(false)
+      props.onOpenChange(false)
       return
     }
 
     try {
       setConfirmLoading(true)
       await props.onConfirm()
-      setOpen(false)
+      props.onOpenChange(false)
     } finally {
       setConfirmLoading(false)
     }
   }
 
   return (
-    <ShadcnDialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>{props.children}</DialogTrigger>
-
+    <ShadcnDialog open={props.open} onOpenChange={props.onOpenChange}>
       <DialogContent className="sm:max-w-106.25">
         <DialogHeader>
           <DialogTitle>{props.title ?? '提示'}</DialogTitle>

@@ -1,7 +1,8 @@
 import { ReactNode } from 'react'
 
 export interface ConfigProp {
-  children: ReactNode
+  open: boolean
+  onOpenChange: (_open: boolean) => void
   title?: string
   content?: ReactNode
   confirmText?: string
