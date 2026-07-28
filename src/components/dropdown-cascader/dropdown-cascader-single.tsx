@@ -1,10 +1,7 @@
-import * as React from 'react'
+import { ReactNode, useMemo, useState } from 'react'
 import { ChevronDown, X } from 'lucide-react'
 import { Button } from '@/components/button'
-import {
-  ConfigCascaderOption,
-  ConfigDropdownCascaderSingleWithOptionsProp,
-} from '@/components/dropdown-cascader/type'
+import type { ConfigDropdownCascaderSingleProp } from '@/components/dropdown-cascader/type'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,38 +10,64 @@ import {
 import { EnumVariant } from '@/type'
 import { getOptionMap, renderCascaderNodes } from './dropdown-cascader-base'
 
-export const DropdownCascaderSingle = (
-  props: ConfigDropdownCascaderSingleWithOptionsProp
+export const DropdownCascaderSingle = <T,>(
+  props: ConfigDropdownCascaderSingleProp<T>
 ) => {
-  const optionMap = React.useMemo(
-    () => getOptionMap(props.options),
-    [props.options]
+  const [open, setOpen] = useState(false)
+
+  const optionMap = useMemo(
+    () =>
+      getOptionMap(props.options, {
+        getValue: props.getValue,
+        getLabel: props.getLabel,
+        getChildren: props.getChildren,
+        getDisabled: props.getDisabled,
+        getShowParentInChildren: props.getShowParentInChildren,
+      }),
+    [
+      props.options,
+      props.getValue,
+      props.getLabel,
+      props.getChildren,
+      props.getDisabled,
+      props.getShowParentInChildren,
+    ]
   )
-  const [open, setOpen] = React.useState(false)
 
-  const selectNode = (node: ConfigCascaderOption) => {
-    const found = optionMap.get(node.value)
-    if (!found) return
+  const selectNode = (node: T) => {
+    const nodeValue = props.getValue(node)
+    const found = optionMap.get(nodeValue)
 
-    props.onValueChange?.(node.value, found)
+    if (!found) {
+      return
+    }
+
+    props.onValueChange?.(nodeValue, found)
     setOpen(false)
   }
 
-  const selectedPath = props.value
-    ? optionMap
-        .get(props.value)
-        ?.path.map(i => i.label)
-        .join(' / ')
-    : ''
+  const selected = props.value ? optionMap.get(props.value) : undefined
+
+  const selectedPath = selected
+    ? selected.path.reduce<Array<ReactNode>>((result, option, index) => {
+        if (index > 0) {
+          result.push(' / ')
+        }
+
+        result.push(props.getLabel(option))
+        return result
+      }, [])
+    : null
 
   return (
     <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild className="self-start">
         <Button
+          type="button"
           variant={EnumVariant.OUTLINE}
           className="h-auto! min-h-9 w-full justify-between px-3 leading-none"
         >
-          <span className="truncate">{selectedPath || props.placeholder}</span>
+          <span className="truncate">{selectedPath ?? props.placeholder}</span>
 
           <div className="ml-auto flex items-center">
             {props.value && (
@@ -52,19 +75,19 @@ export const DropdownCascaderSingle = (
                 role="button"
                 tabIndex={0}
                 className="mr-1 inline-flex cursor-pointer items-center justify-center text-muted-foreground hover:text-foreground"
-                onPointerDown={e => {
-                  e.preventDefault()
-                  e.stopPropagation()
+                onPointerDown={event => {
+                  event.preventDefault()
+                  event.stopPropagation()
                 }}
-                onClick={e => {
-                  e.preventDefault()
-                  e.stopPropagation()
+                onClick={event => {
+                  event.preventDefault()
+                  event.stopPropagation()
                   props.onValueChange?.(null, null)
                 }}
-                onKeyDown={e => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault()
-                    e.stopPropagation()
+                onKeyDown={event => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    event.stopPropagation()
                     props.onValueChange?.(null, null)
                   }
                 }}
@@ -86,7 +109,15 @@ export const DropdownCascaderSingle = (
           props.options,
           [],
           props.value ? [props.value] : [],
-          selectNode
+          selectNode,
+          {
+            getValue: props.getValue,
+            getLabel: props.getLabel,
+            getChildren: props.getChildren,
+            getDisabled: props.getDisabled,
+            getShowParentInChildren: props.getShowParentInChildren,
+          },
+          props.renderDropdownItem
         )}
       </DropdownMenuContent>
     </DropdownMenu>

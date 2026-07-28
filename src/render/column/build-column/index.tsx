@@ -35,7 +35,7 @@ interface AccessorColumnProp<T extends object, V> {
   key: string
   label: string
   tip?: string
-  minWidth: number
+  minWidth?: number
   accessor: (row: T) => V
   render?: (_value: V, _row: T, _ctx: CellContext<T, unknown>) => ReactNode
 }

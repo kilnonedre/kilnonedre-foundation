@@ -5,6 +5,14 @@ export interface CommonLocationResp extends CommonLocation {
   id: UUID // 地理位置ID
 }
 
+export interface CommonLocationReq {
+  /// 定位
+  location: CommonLocation
+
+  /// 地图服务返回的原始响应数据
+  rawResponse: string
+}
+
 export interface CommonLocation {
   longitude: number // 经度
   latitude: number // 纬度

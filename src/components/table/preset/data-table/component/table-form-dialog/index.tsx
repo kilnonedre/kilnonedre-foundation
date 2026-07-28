@@ -13,12 +13,7 @@ export const TableFormDialog = (props: types.ConfigProp) => {
 
   return (
     <Dialog open={props.open} onOpenChange={props.onOpenChange}>
-      <DialogContent
-        className="sm:max-w-106.25 flex max-h-[90vh] flex-col"
-        onOpenAutoFocus={event => {
-          event.preventDefault()
-        }}
-      >
+      <DialogContent className="sm:max-w-106.25 flex max-h-[90vh] flex-col">
         <DialogHeader>
           <DialogTitle>{EnumFormModeLabel[props.mode]}</DialogTitle>
         </DialogHeader>

@@ -1,8 +1,8 @@
 import { FieldValues } from 'react-hook-form'
-import { DateTimePicker, FieldController } from '@/components'
+import { DatePicker, FieldController } from '@/components'
 import type * as types from './type'
 
-export const FormTimePicker = <T extends FieldValues>(
+export const FormDatePicker = <T extends FieldValues>(
   props: types.ConfigProp<T>
 ) => {
   return (
@@ -12,7 +12,7 @@ export const FormTimePicker = <T extends FieldValues>(
       required={props.required ?? true}
     >
       {({ id, field }) => (
-        <DateTimePicker id={id} value={field.value} onChange={field.onChange} />
+        <DatePicker id={id} value={field.value} onChange={field.onChange} />
       )}
     </FieldController>
   )

@@ -1,9 +1,9 @@
-import * as React from 'react'
+import { ReactNode, useCallback, useMemo, useState } from 'react'
 import { ChevronDown, X } from 'lucide-react'
 import { Button } from '@/components/button'
-import {
-  ConfigCascaderOption,
-  ConfigDropdownCascaderMultiWithOptionsProp,
+import type {
+  ConfigCascaderSelected,
+  ConfigDropdownCascaderMultiProp,
 } from '@/components/dropdown-cascader/type'
 import {
   DropdownMenu,
@@ -15,58 +15,81 @@ import { getOptionMap, renderCascaderNodes } from './dropdown-cascader-base'
 
 const toggle = (list: Array<string>, value: string) => {
   if (list.includes(value)) {
-    return list.filter(v => v !== value)
+    return list.filter(item => item !== value)
   }
+
   return [...list, value]
 }
 
-export const DropdownCascaderMulti = ({
+export const DropdownCascaderMulti = <T,>({
   value = [],
   ...props
-}: ConfigDropdownCascaderMultiWithOptionsProp) => {
-  const optionMap = React.useMemo(
-    () => getOptionMap(props.options),
-    [props.options]
-  )
-  const [open, setOpen] = React.useState(false)
+}: ConfigDropdownCascaderMultiProp<T>) => {
+  const [open, setOpen] = useState(false)
 
-  const buildSelected = React.useCallback(
-    (values: Array<string>) => {
-      return values
-        .map(v => optionMap.get(v))
-        .filter(Boolean)
-        .map(i => ({
-          option: i!.option,
-          path: i!.path,
-        }))
+  const optionMap = useMemo(
+    () =>
+      getOptionMap(props.options, {
+        getValue: props.getValue,
+        getLabel: props.getLabel,
+        getChildren: props.getChildren,
+        getDisabled: props.getDisabled,
+        getShowParentInChildren: props.getShowParentInChildren,
+      }),
+    [
+      props.options,
+      props.getValue,
+      props.getLabel,
+      props.getChildren,
+      props.getDisabled,
+      props.getShowParentInChildren,
+    ]
+  )
+
+  const buildSelected = useCallback(
+    (values: Array<string>): Array<ConfigCascaderSelected<T>> => {
+      return values.flatMap(item => {
+        const selected = optionMap.get(item)
+        return selected ? [selected] : []
+      })
     },
     [optionMap]
   )
 
-  const selectNode = (node: ConfigCascaderOption) => {
-    const nextValues = toggle(value, node.value)
+  const selectNode = (node: T) => {
+    const nodeValue = props.getValue(node)
+    const nextValues = toggle(value, nodeValue)
     const nextSelected = buildSelected(nextValues)
+
     props.onValueChange?.(nextValues, nextSelected)
   }
 
-  const remove = (v: string) => {
-    const nextValues = value.filter(i => i !== v)
+  const remove = (removedValue: string) => {
+    const nextValues = value.filter(item => item !== removedValue)
     const nextSelected = buildSelected(nextValues)
+
     props.onValueChange?.(nextValues, nextSelected)
   }
 
-  const selectedItems = value
-    .map(v => optionMap.get(v))
-    .filter(Boolean)
-    .map(i => ({
-      value: i!.option.value,
-      label: i!.path.map(p => p.label).join(' / '),
-    }))
+  const selectedItems = buildSelected(value).map(selected => ({
+    value: props.getValue(selected.option),
+    label: selected.path
+      .map(option => props.getLabel(option))
+      .reduce<Array<ReactNode>>((result, label, index) => {
+        if (index > 0) {
+          result.push(' / ')
+        }
+
+        result.push(label)
+        return result
+      }, []),
+  }))
 
   return (
     <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild className="self-start">
         <Button
+          type="button"
           variant={EnumVariant.OUTLINE}
           className="h-auto! min-h-9 w-full justify-between px-3"
         >
@@ -79,23 +102,24 @@ export const DropdownCascaderMulti = ({
                 className="inline-flex items-center gap-1 rounded border px-2 py-0.5 text-sm"
               >
                 {item.label}
+
                 <span
                   role="button"
                   tabIndex={0}
                   className="inline-flex cursor-pointer items-center justify-center"
-                  onPointerDown={e => {
-                    e.preventDefault()
-                    e.stopPropagation()
+                  onPointerDown={event => {
+                    event.preventDefault()
+                    event.stopPropagation()
                   }}
-                  onClick={e => {
-                    e.preventDefault()
-                    e.stopPropagation()
+                  onClick={event => {
+                    event.preventDefault()
+                    event.stopPropagation()
                     remove(item.value)
                   }}
-                  onKeyDown={e => {
-                    if (e.key === 'Enter' || e.key === ' ') {
-                      e.preventDefault()
-                      e.stopPropagation()
+                  onKeyDown={event => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault()
+                      event.stopPropagation()
                       remove(item.value)
                     }
                   }}
@@ -106,7 +130,7 @@ export const DropdownCascaderMulti = ({
             ))}
           </div>
 
-          <ChevronDown className="size-4 opacity-50" />
+          <ChevronDown className="size-4 shrink-0 opacity-50" />
         </Button>
       </DropdownMenuTrigger>
 
@@ -114,7 +138,20 @@ export const DropdownCascaderMulti = ({
         align="start"
         className="w-(--radix-dropdown-menu-trigger-width)"
       >
-        {renderCascaderNodes(props.options, [], value, selectNode)}
+        {renderCascaderNodes(
+          props.options,
+          [],
+          value,
+          selectNode,
+          {
+            getValue: props.getValue,
+            getLabel: props.getLabel,
+            getChildren: props.getChildren,
+            getDisabled: props.getDisabled,
+            getShowParentInChildren: props.getShowParentInChildren,
+          },
+          props.renderDropdownItem
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   )

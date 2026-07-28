@@ -1,4 +1,4 @@
 export interface ConfigProp {
-  text?: string | number
+  text?: string | number | null
   wrap?: boolean
 }
