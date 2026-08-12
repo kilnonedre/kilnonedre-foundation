@@ -12,7 +12,7 @@ import type * as types from './type'
 
 export * from './type'
 
-/* eslint complexity: ["error", 20] */
+/* eslint complexity: ["error", 30] */
 export const TableRowAction = <T extends { id: string }>(
   props: types.ConfigProp<T>
 ) => {
@@ -21,11 +21,21 @@ export const TableRowAction = <T extends { id: string }>(
     toDelete?: (_id: string) => void
     toAudit?: (_id: string) => void
     canDelete?: (_row: T, _index: number) => boolean
+
+    rowActionMeta?: Record<
+      string,
+      {
+        label: string
+        callback: (_id: string) => void
+        separator?: boolean
+      }
+    >
   }
 
   const edit = props.toEdit ?? meta?.toEdit
   const remove = props.toDelete ?? meta?.toDelete
   const audit = props.toAudit ?? meta?.toAudit
+  const rowActions = meta?.rowActionMeta ?? {}
 
   const canDelete =
     meta?.canDelete?.(props.row.original, props.row.index) ?? true
@@ -33,8 +43,11 @@ export const TableRowAction = <T extends { id: string }>(
   const showEdit = !!edit
   const showDelete = !!remove && canDelete
   const showAudit = !!audit
+  const showRowActions = Object.keys(rowActions).length > 0
 
-  if (!showEdit && !showDelete && !showAudit) return null
+  if (!showEdit && !showDelete && !showAudit && !showRowActions) {
+    return null
+  }
 
   return (
     <DropdownMenu>
@@ -58,12 +71,31 @@ export const TableRowAction = <T extends { id: string }>(
             >
               编辑
             </DropdownMenuItem>
-            {(showDelete || showAudit) && <DropdownMenuSeparator />}
           </>
         )}
 
+        {showRowActions &&
+          Object.entries(rowActions).map(([key, item]) => (
+            <div key={key}>
+              {item.separator && <DropdownMenuSeparator />}
+
+              <DropdownMenuItem
+                className="justify-center"
+                onSelect={() => {
+                  setTimeout(() => {
+                    item.callback(props.row.original.id)
+                  }, 0)
+                }}
+              >
+                {item.label}
+              </DropdownMenuItem>
+            </div>
+          ))}
+
         {showDelete && (
           <>
+            {(showEdit || showRowActions) && <DropdownMenuSeparator />}
+
             <DropdownMenuItem
               className="justify-center"
               onSelect={() => {
@@ -72,19 +104,22 @@ export const TableRowAction = <T extends { id: string }>(
             >
               删除
             </DropdownMenuItem>
-            {showAudit && <DropdownMenuSeparator />}
           </>
         )}
 
         {showAudit && (
-          <DropdownMenuItem
-            className="justify-center"
-            onSelect={() => {
-              setTimeout(() => audit(props.row.original.id), 0)
-            }}
-          >
-            变更记录
-          </DropdownMenuItem>
+          <>
+            {showDelete && <DropdownMenuSeparator />}
+
+            <DropdownMenuItem
+              className="justify-center"
+              onSelect={() => {
+                setTimeout(() => audit(props.row.original.id), 0)
+              }}
+            >
+              变更记录
+            </DropdownMenuItem>
+          </>
         )}
       </DropdownMenuContent>
     </DropdownMenu>

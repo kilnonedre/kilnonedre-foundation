@@ -8,7 +8,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from '@/shadcn/components/dialog'
-import { EnumVariant } from '@/type/enum'
+import { EnumSemanticColor, EnumVariant } from '@/type/enum'
 import type * as types from './type'
 
 export const Dialog = (props: types.ConfigProp) => {
@@ -53,6 +53,7 @@ export const Dialog = (props: types.ConfigProp) => {
 
           <Button
             type="button"
+            semanticColor={EnumSemanticColor.DARK}
             loading={confirmLoading}
             disabled={confirmLoading}
             onClick={handleConfirm}
