@@ -36,3 +36,11 @@ export const naiveDateToDate = (value?: NaiveDate): Date | undefined => {
 
   return date
 }
+
+export const ymdToNaiveDate = (
+  year: number,
+  month: number = 1,
+  day: number = 1
+): NaiveDate => {
+  return `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}` as NaiveDate
+}
