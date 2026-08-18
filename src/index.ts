@@ -1,9 +1,0 @@
-import './style/color.css'
-
-export * from './components'
-export * from './layout'
-export * from './net'
-export * from './render'
-export * from './shared'
-export * from './type'
-export * from './util'

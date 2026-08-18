@@ -10,5 +10,12 @@
         "regeocode",
         "typecode",
         "uuidv"
-    ]
+    ],
+    "eslint.workingDirectories": [
+        {
+            "mode": "auto"
+        }
+    ],
+    "js/ts.tsserver.experimental.enableProjectDiagnostics": true,
+    "js/ts.preferences.includePackageJsonAutoImports": "on"
 }

@@ -19,7 +19,7 @@
         "baseUrl": ".",
         "paths": {
             "@/*": [
-                "./src/*"
+                "foundation/src/*"
             ]
         },
         "types": [
@@ -27,6 +27,6 @@
         ]
     },
     "include": [
-        "src"
+        "foundation/src"
     ]
 }

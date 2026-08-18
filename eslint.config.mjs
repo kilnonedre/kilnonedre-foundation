@@ -31,6 +31,7 @@ export default defineConfig([
         {
           argsIgnorePattern: '^_',
           varsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
         },
       ],
       'no-unused-vars': 'off',
@@ -63,15 +64,25 @@ export default defineConfig([
         {
           groups: [
             [
+              // React
               '^react',
+
+              // 第三方包
               '^@?\\w',
-              '^@(/.*|$)',
+              // 内部 npm 包
+              '^@kilnonedre(/.*|$)',
+              // 项目 alias
+              '^@/.*',
+              // 父级路径
               '^\\.\\.(?!/?$)',
               '^\\.\\./?$',
+              // 当前目录
               '^\\./(?=.*/)(?!/?$)',
               '^\\.(?!/?$)',
               '^\\./?$',
-              '^.+\\.?(css|less|scss)$',
+              // 样式
+              '^.+\\.(css|less|scss)$',
+              // side effect
               '^\\u0000',
             ],
           ],
