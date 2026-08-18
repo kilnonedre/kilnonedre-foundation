@@ -1,4 +1,3 @@
-import { toast } from 'sonner'
 import { eventBus } from '@/shared/event-bus'
 import {
   ConfigApiErr,
@@ -26,17 +25,19 @@ const errMessage = (status: number) => {
   return `${message}，请检查网络或联系管理员！`
 }
 
-export const registerToastSubscriber = () => {
+export const registerToastSubscriber = (
+  toastError: (message: string) => void
+) => {
   const onHttpUnauth = ({ status }: ConfigHttpUnauth) => {
-    toast.error(errMessage(status))
+    toastError(errMessage(status))
   }
 
   const onHttpErr = ({ status }: ConfigHttpErr) => {
-    toast.error(errMessage(status))
+    toastError(errMessage(status))
   }
 
   const onApiErr = ({ msg }: ConfigApiErr) => {
-    toast.error(msg)
+    toastError(msg)
   }
 
   eventBus.on('HTTP:UNAUTH', onHttpUnauth)

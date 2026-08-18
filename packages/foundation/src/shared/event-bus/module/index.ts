@@ -12,9 +12,12 @@ const composeCleanups = (...cleanups: Cleanup[]) => {
   }
 }
 
-export const assembleApp = (onLogoutRequired: () => void) => {
+export const assembleApp = (
+  toastError: (message: string) => void,
+  onLogoutRequired: () => void
+) => {
   return composeCleanups(
-    registerToastSubscriber(),
+    registerToastSubscriber(toastError),
     registerRouterSubscriber(onLogoutRequired)
   )
 }

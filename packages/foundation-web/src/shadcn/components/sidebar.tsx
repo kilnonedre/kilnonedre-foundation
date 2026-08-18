@@ -150,7 +150,6 @@ function SidebarProvider({
   )
 }
 
-// eslint-disable-next-line complexity
 function Sidebar({
   side = 'left',
   variant = 'sidebar',
