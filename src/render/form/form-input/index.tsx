@@ -54,7 +54,9 @@ export const FormInputNumber = <T extends FieldValues>(
             type={EnumInputType.NUMBER}
             onChange={event => {
               const value = event.target.value
-              field.onChange(value === '' ? undefined : Number(value))
+              field.onChange(
+                value === '' || value == null ? undefined : Number(value)
+              )
             }}
             className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
           />
