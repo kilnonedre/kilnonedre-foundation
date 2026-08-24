@@ -1,6 +1,7 @@
 import { Button } from '@/components'
-import type * as types from './type'
 import { EnumSemanticColor, EnumVariant } from '@kilnonedre/foundation'
+
+import type * as types from './type'
 
 const LibraryItem = (props: types.ConfigProp) => {
   return (

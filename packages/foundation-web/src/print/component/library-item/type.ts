@@ -1,4 +1,4 @@
-import { EnumElementType } from '@/print/type'
+import { EnumElementType } from '@/print/enum/element-type'
 import { DragEvent, ReactNode } from 'react'
 
 export interface ConfigProp {

@@ -15,16 +15,14 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from '@/shadcn/components/tooltip'
-import { cn, CommonOption } from '@kilnonedre/foundation'
-
-export type FieldLayout = 'vertical' | 'horizontal'
+import { cn, CommonOption, EnumDirection } from '@kilnonedre/foundation'
 
 export type FieldBaseProps = {
   id: string
   label?: string
   tip?: string
   required?: boolean
-  layout?: FieldLayout
+  layout?: EnumDirection
   labelClassName?: string
   children?: ReactNode
   maxWidth?: number
@@ -44,6 +42,25 @@ export const FieldBaseInput = (
         id={props.id}
         value={props.value}
         onChange={e => props.onChange?.(e.target.value)}
+        placeholder={props.placeholder}
+      />
+    </FieldBase>
+  )
+}
+
+export const FieldBaseNumberInput = (
+  props: FieldBaseProps & {
+    value?: number
+    onChange?: (_value: number) => void
+    placeholder?: string
+  }
+) => {
+  return (
+    <FieldBase {...props}>
+      <Input
+        id={props.id}
+        value={String(props.value)}
+        onChange={e => props.onChange?.(Number(e.target.value))}
         placeholder={props.placeholder}
       />
     </FieldBase>
@@ -140,10 +157,10 @@ export const FieldBaseColor = (
 
 export const FieldBase = ({
   required = false,
-  layout = 'horizontal',
+  layout = EnumDirection.HORIZONTAL,
   ...props
 }: FieldBaseProps) => {
-  const isHorizontal = layout === 'horizontal'
+  const isHorizontal = layout === EnumDirection.HORIZONTAL
 
   return (
     <Field

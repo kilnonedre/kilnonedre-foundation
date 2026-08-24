@@ -54,7 +54,7 @@
     "typescript": "^5.0.0"
   },
   "dependencies": {
-    "@kilnonedre/foundation": "workspace:*",
+    "@kilnonedre/foundation": "file:../foundation",
     "@amap/amap-jsapi-loader": "^1.0.1",
     "@hookform/resolvers": "^5.4.0",
     "@radix-ui/colors": "^3.0.0",

@@ -1,7 +1,7 @@
 import { AppSidebar } from '@/layout/main/component/app-sidebar'
 import { SiteHeader } from '@/layout/main/component/site-header'
-import { SidebarInset, SidebarProvider } from '@/shadcn/components/sidebar'
 import type * as types from './type'
+import { SidebarInset, SidebarProvider } from '@/shadcn/components/sidebar'
 
 export const MainLayout = (props: types.ConfigProp) => {
   return (

@@ -1,77 +1,51 @@
-import { ConfigPrintData } from '@/print/type'
+import { mockValueByType } from '@/print/enum/type'
+import { ConfigField } from '@/print/type/element'
 
 export const SNAP_DISTANCE = 5
 
-export const PAPER_PRESETS = [
-  {
-    label: 'A3',
-    value: 'A3',
-    width: 297,
-    height: 420,
-  },
-  {
-    label: 'A4',
-    value: 'A4',
-    width: 210,
-    height: 297,
-  },
-  {
-    label: 'A5',
-    value: 'A5',
-    width: 148,
-    height: 210,
-  },
-  {
-    label: 'B4',
-    value: 'B4',
-    width: 250,
-    height: 353,
-  },
-  {
-    label: 'B5',
-    value: 'B5',
-    width: 176,
-    height: 250,
-  },
-  {
-    label: '80mm小票',
-    value: 'RECEIPT_80MM',
-    width: 80,
-    height: 200,
-  },
-  {
-    label: '58mm小票',
-    value: 'RECEIPT_58MM',
-    width: 58,
-    height: 200,
-  },
-  {
-    label: '100×150面单',
-    value: 'WAYBILL_100X150',
-    width: 100,
-    height: 150,
-  },
-]
+export const createMockData = <T>(
+  fields: Array<ConfigField>,
+  columns: Array<ConfigField>
+): T => {
+  const data: Record<string, unknown> = {}
 
-export const mockData: ConfigPrintData = {
-  orderNo: 'UC001',
-  customerName: '客户小张',
-  deliveryDate: '2026-06-03',
-  items: [
-    { name: '胡萝卜', unit: '斤', quantity: 12, price: '3.50' },
-    { name: '土豆', unit: '斤', quantity: 8, price: '2.20' },
-    { name: '菠菜', unit: '斤', quantity: 5, price: '4.00' },
-  ],
+  fields.forEach(field => {
+    data[field.field] = mockValueByType(field.type)
+  })
+
+  data.items = Array.from({ length: 3 }, () => {
+    const row: Record<string, unknown> = {}
+
+    columns.forEach(column => {
+      row[column.field] = mockValueByType(column.type)
+    })
+
+    return row
+  })
+
+  return data as T
 }
 
-export const injectedData: ConfigPrintData = {
-  orderNo: 'UC999',
-  customerName: '客户李四',
-  deliveryDate: '2026-06-10',
-  items: Array.from({ length: 40 }).map((_, index) => ({
-    name: index < 4 ? ['西红柿', '黄瓜', '茄子', '青椒'][index] : '青椒',
-    unit: '斤',
-    quantity: index < 4 ? [20, 15, 10, 6][index] : 6,
-    price: index < 4 ? ['5.00', '3.20', '4.50', '6.00'][index] : '6.00',
-  })),
+export const createInjectedData = <T>(
+  fields: Array<ConfigField>,
+  columns: Array<ConfigField>,
+  rowCount = 40
+): T => {
+  const data: Record<string, unknown> = {}
+
+  fields.forEach(field => {
+    data[field.field] = mockValueByType(field.type)
+  })
+
+  data.items = Array.from({ length: rowCount }, () => {
+    const row: Record<string, unknown> = {}
+
+    columns.forEach(column => {
+      row[column.field] = mockValueByType(column.type)
+    })
+
+    return row
+  })
+
+  return data as T
 }
