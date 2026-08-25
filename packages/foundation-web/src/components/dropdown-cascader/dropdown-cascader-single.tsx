@@ -60,7 +60,7 @@ export const DropdownCascaderSingle = <T,>(
     : null
 
   return (
-    <DropdownMenu modal={false} open={open} onOpenChange={setOpen}>
+    <DropdownMenu open={open} onOpenChange={setOpen}>
       <DropdownMenuTrigger asChild className="self-start">
         <Button
           type="button"

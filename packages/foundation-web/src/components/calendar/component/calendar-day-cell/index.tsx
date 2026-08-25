@@ -5,10 +5,13 @@ export const CalendarDayCell = (props: types.ConfigProp) => {
   return (
     <div
       key={props.key}
-      className={cn('w-full h-full', props.bgColor, props.textColor)}
+      className={cn('w-full h-full', props.className)}
       style={props.style}
+      onClick={props.onClick}
     >
-      <div className="text-center pt-1.5">{props.day}</div>
+      <div className={cn('text-center pt-1.5', props.dayClassName)}>
+        {props.day}
+      </div>
     </div>
   )
 }

@@ -1,10 +1,10 @@
-import { CSSProperties } from 'react'
-import { ClassValue } from 'clsx'
+import { CSSProperties, MouseEventHandler } from 'react'
 
 export interface ConfigProp {
   key?: string
   day?: string
-  bgColor?: ClassValue
-  textColor?: ClassValue
+  className?: string
+  dayClassName?: string
   style?: CSSProperties
+  onClick?: MouseEventHandler<HTMLDivElement>
 }

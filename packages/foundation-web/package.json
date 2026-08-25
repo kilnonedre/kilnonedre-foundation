@@ -1,6 +1,6 @@
 {
   "name": "@kilnonedre/foundation-web",
-  "version": "0.0.35",
+  "version": "0.0.1",
   "private": false,
   "description": "Kilnonedre frontend foundation package",
   "type": "module",

@@ -117,14 +117,14 @@ export const Calendar = ({
     if (outOfRange) {
       return (
         props.renderOutRangeDayCell?.(day) ?? (
-          <CalendarDayCell bgColor={outOfRange && 'bg-muted'} day={''} />
+          <CalendarDayCell className={outOfRange && 'bg-muted'} day={''} />
         )
       )
     } else if (!day.isCurrentMonth) {
       return (
         props.renderOtherMonthDayCell?.(day) ?? (
           <CalendarDayCell
-            textColor={'text-muted-foreground/50'}
+            className={'text-muted-foreground/50'}
             day={`${day.day}日`}
           />
         )

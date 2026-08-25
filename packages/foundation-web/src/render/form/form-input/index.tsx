@@ -36,7 +36,7 @@ export const FormInputText = <T extends FieldValues>(
 }
 
 export const FormInputNumber = <T extends FieldValues>(
-  props: types.ConfigProp<T>
+  props: types.ConfigProp<T> & { max?: number; min?: number }
 ) => {
   return (
     <FieldController
@@ -49,6 +49,8 @@ export const FormInputNumber = <T extends FieldValues>(
           <InputGroupInput
             {...field}
             id={id}
+            max={props.max}
+            min={props.min}
             value={field.value ?? ''}
             aria-invalid={fieldState.invalid}
             type={EnumInputType.NUMBER}
