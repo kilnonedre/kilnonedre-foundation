@@ -19,6 +19,11 @@ export const DatePicker = (props: types.ConfigProp) => {
   const [open, setOpen] = React.useState(false)
 
   const selected = naiveDateToDate(props.value)
+  const minDate = naiveDateToDate(props.minDate)
+  const maxDate = naiveDateToDate(props.maxDate)
+
+  const currentYear = new Date().getFullYear()
+
   const text = props.value ?? props.placeholder
 
   return (
@@ -46,7 +51,13 @@ export const DatePicker = (props: types.ConfigProp) => {
           locale={zhCN}
           captionLayout="dropdown"
           className="w-full"
-          defaultMonth={selected}
+          defaultMonth={selected ?? minDate ?? new Date()}
+          startMonth={minDate ?? new Date(currentYear - 50, 0)}
+          endMonth={maxDate ?? new Date(currentYear + 50, 11)}
+          disabled={[
+            ...(minDate ? [{ before: minDate }] : []),
+            ...(maxDate ? [{ after: maxDate }] : []),
+          ]}
           onSelect={value => {
             props.onChange(value ? dateToNaiveDate(value) : undefined)
             setOpen(false)

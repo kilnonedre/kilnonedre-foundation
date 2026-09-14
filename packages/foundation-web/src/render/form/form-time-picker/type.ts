@@ -1,4 +1,8 @@
 import { FieldValues } from 'react-hook-form'
 import { ConfigRenderBase } from '@/render/form/type'
 
-export type ConfigProp<T extends FieldValues> = ConfigRenderBase<T>
+export interface ConfigProp<T extends FieldValues> extends ConfigRenderBase<T> {
+  minDate?: Date
+  maxDate?: Date
+  timeClassName?: string
+}

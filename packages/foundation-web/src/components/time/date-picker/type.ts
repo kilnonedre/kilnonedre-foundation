@@ -5,5 +5,7 @@ export interface ConfigProp {
   value?: NaiveDate
   disabled?: boolean
   placeholder?: string
+  minDate?: NaiveDate
+  maxDate?: NaiveDate
   onChange: (_value?: NaiveDate) => void
 }

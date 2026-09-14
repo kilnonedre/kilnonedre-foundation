@@ -1,7 +1,5 @@
-import { UUID } from '@/type/uuid'
-
 export interface ConfigPermissionItem {
-  id: UUID
+  id: string
   title: string
   fullTitle: string
   url: string

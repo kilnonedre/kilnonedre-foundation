@@ -7,7 +7,11 @@ const isFormData = (value: unknown): value is FormData => {
 export const createHttp = (
   fetchWithInterceptor: types.ConfigFetchWithInterceptor
 ) => {
-  const Get = (url: string, params?: object, config?: RequestInit) => {
+  const Get = (
+    url: string,
+    params?: object,
+    config?: RequestInit & { withHeader?: boolean }
+  ) => {
     let suffix = ''
 
     if (params) {
@@ -28,11 +32,16 @@ export const createHttp = (
       headers: {
         'Content-Type': 'application/json',
       },
+      withHeader: true,
       ...config,
     })
   }
 
-  const Post = (url: string, params?: object, config?: RequestInit) => {
+  const Post = (
+    url: string,
+    params?: object,
+    config?: RequestInit & { withHeader?: boolean }
+  ) => {
     const isFd = isFormData(params)
     const body = (isFd ? params : JSON.stringify(params)) as FormData | string
 
@@ -46,11 +55,16 @@ export const createHttp = (
             },
           }),
       body,
+      withHeader: true,
       ...config,
     })
   }
 
-  const Put = (url: string, params?: object, config?: RequestInit) => {
+  const Put = (
+    url: string,
+    params?: object,
+    config?: RequestInit & { withHeader?: boolean }
+  ) => {
     const body = (isFormData(params) ? params : JSON.stringify(params)) as
       | FormData
       | string
@@ -61,11 +75,16 @@ export const createHttp = (
         'Content-Type': 'application/json',
       },
       body,
+      withHeader: true,
       ...config,
     })
   }
 
-  const Patch = (url: string, params?: object, config?: RequestInit) => {
+  const Patch = (
+    url: string,
+    params?: object,
+    config?: RequestInit & { withHeader?: boolean }
+  ) => {
     const body = (isFormData(params) ? params : JSON.stringify(params)) as
       | FormData
       | string
@@ -76,17 +95,23 @@ export const createHttp = (
         'Content-Type': 'application/json',
       },
       body,
+      withHeader: true,
       ...config,
     })
   }
 
-  const Delete = (url: string, params?: object, config?: RequestInit) => {
+  const Delete = (
+    url: string,
+    params?: object,
+    config?: RequestInit & { withHeader?: boolean }
+  ) => {
     return fetchWithInterceptor(url, {
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(params),
+      withHeader: true,
       ...config,
     })
   }

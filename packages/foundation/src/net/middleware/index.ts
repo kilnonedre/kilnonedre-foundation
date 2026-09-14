@@ -4,9 +4,6 @@ import type * as types from './type'
 export const createFetchWithInterceptor = (props: types.ConfigProp) => {
   let refreshPromise: Promise<string> | null = null
 
-  const successCode = props.successCode ?? '200'
-  const operatorType = props.operatorType ?? 'SELLER'
-
   const getOrCreateRefreshPromise = (): Promise<string> => {
     if (!refreshPromise) {
       refreshPromise = (async () => {
@@ -22,7 +19,7 @@ export const createFetchWithInterceptor = (props: types.ConfigProp) => {
           userId,
         })
 
-        if (res.code !== successCode || !res.data?.accessToken) {
+        if (res.code !== props.successCode || !res.data?.accessToken) {
           throw new Error('REFRESH_FAILED_' + (res.msg || 'UNKNOWN'))
         }
 
@@ -48,13 +45,28 @@ export const createFetchWithInterceptor = (props: types.ConfigProp) => {
     props.onUnauthorized?.({ status: 401, url })
   }
 
-  const withAuthHeader = (options: RequestInit = {}): RequestInit => {
+  const withAuthHeader = async (
+    options: RequestInit = {}
+  ): Promise<RequestInit> => {
     const headers = new Headers(options.headers || {})
 
     const accessToken = props.getAccessToken()
-    const merchantId = props.getMerchantId?.()
+    let merchantId = props.getMerchantId()
 
-    headers.set('X-Operator-Type', operatorType)
+    if (!merchantId) {
+      const merchantCode = props.getMerchantCode()
+      if (!merchantCode) {
+        throw new Error('NO_MERCHANT_CODE')
+      }
+      const res = await props.readMerchant(merchantCode)
+      if (res.code !== props.successCode) {
+        throw new Error('READ_MERCHANT_' + (res.msg || 'UNKNOWN'))
+      }
+      props.setMerchant(res.data.id, res.data.code)
+      merchantId = res.data.id
+    }
+
+    headers.set('X-Operator-Type', props.operatorType)
 
     if (accessToken) {
       headers.set('Authorization', `Bearer ${accessToken}`)
@@ -72,9 +84,15 @@ export const createFetchWithInterceptor = (props: types.ConfigProp) => {
 
   return async function fetchWithInterceptor<T = object>(
     url: string,
-    options: RequestInit = {}
+    options: RequestInit & { withHeader?: boolean } = {}
   ): Promise<ConfigApiRespT<T>> {
-    const request = () => fetch(url, withAuthHeader(options))
+    const request = async () => {
+      const requestOptions = options.withHeader
+        ? await withAuthHeader(options)
+        : options
+
+      return fetch(url, requestOptions)
+    }
 
     let response = await request()
 
@@ -104,7 +122,7 @@ export const createFetchWithInterceptor = (props: types.ConfigProp) => {
 
     const json = (await response.json()) as ConfigApiRespT<T>
 
-    if (json.code !== successCode) {
+    if (json.code !== props.successCode) {
       props.onApiError?.({
         url,
         code: json.code,

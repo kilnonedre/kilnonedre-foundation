@@ -6,7 +6,7 @@ export interface ConfigProp {
   name: string
   required?: boolean
   mode?: EnumFormMode
-  label?: string
+  value?: string
   invalid?: boolean
   error?: string
   children?: ReactNode

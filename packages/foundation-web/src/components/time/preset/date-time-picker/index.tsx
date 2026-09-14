@@ -2,7 +2,12 @@ import { DatePicker } from '@/components/time/date-picker'
 import { TimeInput } from '@/components/time/time-input'
 import { Field, FieldGroup } from '@/shadcn/components/field'
 import type * as types from './type'
-import { NaiveDate, NaiveTime, padStartNumber } from '@kilnonedre/foundation'
+import {
+  cn,
+  NaiveDate,
+  NaiveTime,
+  padStartNumber,
+} from '@kilnonedre/foundation'
 
 function formatDate(value?: Date | string): NaiveDate | undefined {
   if (!value) {
@@ -80,6 +85,15 @@ export const DateTimePicker = (props: types.ConfigProp) => {
   const date = formatDate(props.value)
   const time = formatTime(props.value)
 
+  const minDate = formatDate(props.minDate)
+  const maxDate = formatDate(props.maxDate)
+
+  const minTime =
+    date && minDate === date ? formatTime(props.minDate) : undefined
+
+  const maxTime =
+    date && maxDate === date ? formatTime(props.maxDate) : undefined
+
   return (
     <FieldGroup className="flex-row gap-2.5">
       <Field>
@@ -87,6 +101,8 @@ export const DateTimePicker = (props: types.ConfigProp) => {
           id={`${props.id}-date`}
           disabled={props.disabled}
           value={date}
+          maxDate={maxDate}
+          minDate={minDate}
           placeholder={props.datePlaceholder}
           onChange={nextDate => {
             if (!nextDate) {
@@ -103,7 +119,9 @@ export const DateTimePicker = (props: types.ConfigProp) => {
         id={`${props.id}-time`}
         disabled={props.disabled || !date}
         value={time}
-        className="w-32"
+        min={minTime}
+        max={maxTime}
+        className={cn('w-32', props.timeClassName)}
         placeholder={props.timePlaceholder}
         onChange={nextTime => {
           if (!date) {

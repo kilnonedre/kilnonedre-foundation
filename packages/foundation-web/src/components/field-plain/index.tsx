@@ -8,14 +8,14 @@ export const FieldPlain = ({
   mode = EnumFormMode.VIEW,
   ...props
 }: types.ConfigProp) => {
-  const label = props.label ?? '-'
+  const value = props.value ?? '-'
   return (
     <>
       <Field data-invalid={props.invalid}>
         <FieldLabel htmlFor={props.id} required={required}>
           {props.name}
         </FieldLabel>
-        {mode === EnumFormMode.VIEW ? <Text>{label}</Text> : props.children}
+        {mode === EnumFormMode.VIEW ? <Text>{value}</Text> : props.children}
         {props.error && <FieldError errors={[{ message: props.error }]} />}
       </Field>
     </>

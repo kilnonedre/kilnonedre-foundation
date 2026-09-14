@@ -12,7 +12,14 @@ export const FormTimePicker = <T extends FieldValues>(
       required={props.required ?? true}
     >
       {({ id, field }) => (
-        <DateTimePicker id={id} value={field.value} onChange={field.onChange} />
+        <DateTimePicker
+          id={id}
+          value={field.value}
+          onChange={field.onChange}
+          timeClassName={props.timeClassName}
+          maxDate={props.maxDate}
+          minDate={props.minDate}
+        />
       )}
     </FieldController>
   )
