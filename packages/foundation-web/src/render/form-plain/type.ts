@@ -3,10 +3,9 @@ import { ReactNode } from 'react'
 
 export interface ConfigFormPlainBase {
   id: string
-  name: string
+  label: string
   required?: boolean
   mode?: EnumFormMode
-  label?: string
   invalid?: boolean
   error?: string
   children?: ReactNode

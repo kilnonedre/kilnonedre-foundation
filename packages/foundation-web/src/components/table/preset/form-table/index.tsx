@@ -94,8 +94,8 @@ export const FormTable = <
     <div className="flex w-full flex-col gap-6">
       <div className="flex items-center justify-between gap-4">
         <div className="ml-auto flex items-center gap-2">
+          {props.toolbar?.()}
           <TableColumnVisibility table={table} />
-
           <TableAddButton
             onClick={() => {
               append(props.createDefaultValue(fields.length))

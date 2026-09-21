@@ -166,6 +166,12 @@ export const DataTable = <T, P>(props: types.ConfigProp<T, P>) => {
   ])
 
   useEffect(() => {
+    props.onSelectionChange?.(
+      table.getSelectedRowModel().rows.map(row => row.original)
+    )
+  }, [rowSelection])
+
+  useEffect(() => {
     const next = props.filters ?? {}
     setFiltersState(next)
     setDraftFilters(next)

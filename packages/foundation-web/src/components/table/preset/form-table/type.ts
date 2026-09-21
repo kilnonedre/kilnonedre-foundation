@@ -5,6 +5,7 @@ import type {
   UseFormReturn,
 } from 'react-hook-form'
 import type { ColumnDef } from '@tanstack/react-table'
+import { ReactNode } from 'react'
 
 export type DeleteContext<TRow> = {
   id: string
@@ -26,4 +27,5 @@ export type ConfigProp<
   onDelete?: (_ctx: DeleteContext<TRow>) => void
   canDelete?: (_row: TRow, _index: number) => boolean
   meta?: Record<string, unknown>
+  toolbar?: () => ReactNode
 }

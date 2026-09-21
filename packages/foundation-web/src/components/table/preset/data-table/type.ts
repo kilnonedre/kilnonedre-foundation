@@ -40,4 +40,6 @@ export type ConfigProp<T, P> = {
 
   meta?: Record<string, unknown>
   navigate?: (_id: UUID) => void
+
+  onSelectionChange?: (rows: Array<T>) => void
 }

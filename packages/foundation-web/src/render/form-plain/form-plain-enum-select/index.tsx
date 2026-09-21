@@ -5,7 +5,7 @@ export const FormPlainEnumSelect = (props: types.ConfigProp) => {
   return (
     <FieldPlain
       id={props.id}
-      name={props.name}
+      label={props.label}
       mode={props.mode}
       required={props.required ?? true}
     >

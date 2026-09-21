@@ -3,10 +3,10 @@ import { ReactNode } from 'react'
 
 export interface ConfigProp {
   id: string
-  name: string
+  label: string
   required?: boolean
   mode?: EnumFormMode
-  value?: string
+  value?: string | null
   invalid?: boolean
   error?: string
   children?: ReactNode

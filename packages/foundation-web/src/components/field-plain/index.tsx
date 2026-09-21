@@ -13,7 +13,7 @@ export const FieldPlain = ({
     <>
       <Field data-invalid={props.invalid}>
         <FieldLabel htmlFor={props.id} required={required}>
-          {props.name}
+          {props.label}
         </FieldLabel>
         {mode === EnumFormMode.VIEW ? <Text>{value}</Text> : props.children}
         {props.error && <FieldError errors={[{ message: props.error }]} />}

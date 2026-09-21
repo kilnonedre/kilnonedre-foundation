@@ -16,7 +16,10 @@ export const FormEnumSelect = <T extends FieldValues>(
       {({ field, fieldState }) => (
         <FormSelect
           value={field.value}
-          onValueChange={field.onChange}
+          onValueChange={value => {
+            field.onChange(value)
+            props.onChange?.(value)
+          }}
           onLabelChange={val => {
             props.onLabelChange?.(val)
           }}

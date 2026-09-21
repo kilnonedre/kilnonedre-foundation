@@ -37,6 +37,7 @@ interface AccessorColumnProp<T extends object, V> {
   tip?: string
   minWidth?: number
   accessor: (row: T) => V
+  visible?: (_value: V, _row: T, _ctx: CellContext<T, unknown>) => boolean
   render?: (_value: V, _row: T, _ctx: CellContext<T, unknown>) => ReactNode
 }
 
@@ -57,10 +58,15 @@ export function buildColumn<T extends object>() {
         minSize: minWidth,
         header: () => renderHeader(props.label, props.tip),
         cell: ctx => {
-          const value = props.accessor(ctx.row.original)
+          const row = ctx.row.original
+          const value = props.accessor(row)
+
+          if (props.visible && !props.visible(value, row, ctx)) {
+            return null
+          }
 
           return props.render ? (
-            props.render(value, ctx.row.original, ctx)
+            props.render(value, row, ctx)
           ) : (
             <TableText text={String(value ?? '')} />
           )
@@ -76,10 +82,15 @@ export function buildColumn<T extends object>() {
       minSize: minWidth,
       header: () => renderHeader(props.label, props.tip),
       cell: ctx => {
-        const value = ctx.row.original[props.key]
+        const row = ctx.row.original
+        const value = row[props.key]
+
+        if (props.visible && !props.visible(value, row, ctx)) {
+          return null
+        }
 
         return props.render ? (
-          props.render(value, ctx.row.original, ctx)
+          props.render(value, row, ctx)
         ) : (
           <TableText text={String(value ?? '')} />
         )
