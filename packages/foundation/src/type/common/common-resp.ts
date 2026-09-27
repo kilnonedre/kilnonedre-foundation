@@ -16,3 +16,8 @@ export interface CommonBaseResp {
 export interface CommonResp extends CommonBaseResp {
   merchant: CommonMerchant // 商户
 }
+
+export interface CommonSnap {
+  id: UUID // 唯一标识符
+  merchant: CommonMerchant // 商户
+}
